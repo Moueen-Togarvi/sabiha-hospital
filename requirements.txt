@@ -1,0 +1,25 @@
+Flask
+Flask-PyMongo
+pymongo[srv]
+dnspython
+pandas
+openpyxl
+python-dotenv
+Werkzeug
+itsdangerous
+gunicorn==21.2.0
+Flask-Limiter
+Flask-Talisman
+Flask-CORS
+redis
+rq
+PyJWT
+# Phase 3 additions
+pyppeteer
+APScheduler==3.10.4
+qrcode[pil]
+Pillow
+boto3
+requests
+# Phase 4 security additions
+cryptography
