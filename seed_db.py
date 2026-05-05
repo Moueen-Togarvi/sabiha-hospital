@@ -6,12 +6,12 @@ from pymongo import MongoClient
 from werkzeug.security import generate_password_hash
 
 from services.encryption import encrypt_data
-from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs
+from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs, get_configured_mongo_uri
 
 load_dotenv()
 
 MONGO_URI = normalize_mongo_uri(
-    os.environ.get("MONGO_URI", "mongodb://localhost:27017/hospital_management"),
+    get_configured_mongo_uri("mongodb://localhost:27017/hospital_management"),
     get_database_name(),
 )
 DB_NAME = get_database_name()

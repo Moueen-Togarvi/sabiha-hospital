@@ -10,7 +10,7 @@ import logging
 from datetime import datetime
 from dotenv import load_dotenv
 from services.encryption import decrypt_data
-from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs
+from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs, get_configured_mongo_uri
 
 load_dotenv()
 
@@ -28,7 +28,7 @@ def task_send_billing(patient_id: str, phone_number: str, month_year: str):
     from pymongo import MongoClient
     from bson.objectid import ObjectId
 
-    mongo_uri = normalize_mongo_uri(os.getenv('MONGO_URI', 'mongodb://localhost:27017/hospital_management'), get_database_name())
+    mongo_uri = normalize_mongo_uri(get_configured_mongo_uri('mongodb://localhost:27017/hospital_management'), get_database_name())
     db = MongoClient(mongo_uri, **get_mongo_client_kwargs(mongo_uri))[get_database_name()]
 
     try:
@@ -146,7 +146,7 @@ def task_send_daily_report(patient_id: str, phone_number: str, report_date: str)
     from pymongo import MongoClient
     from bson.objectid import ObjectId
 
-    mongo_uri = normalize_mongo_uri(os.getenv('MONGO_URI', 'mongodb://localhost:27017/hospital_management'), get_database_name())
+    mongo_uri = normalize_mongo_uri(get_configured_mongo_uri('mongodb://localhost:27017/hospital_management'), get_database_name())
     db = MongoClient(mongo_uri, **get_mongo_client_kwargs(mongo_uri))[get_database_name()]
 
     try:

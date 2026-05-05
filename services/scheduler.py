@@ -12,7 +12,7 @@ import logging
 from datetime import datetime
 
 from dotenv import load_dotenv
-from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs
+from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs, get_configured_mongo_uri
 
 load_dotenv()
 
@@ -32,7 +32,7 @@ def run_billing_job():
         from pymongo import MongoClient
 
         redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
-        mongo_uri = normalize_mongo_uri(os.getenv('MONGO_URI', 'mongodb://localhost:27017/hospital_management'), get_database_name())
+        mongo_uri = normalize_mongo_uri(get_configured_mongo_uri('mongodb://localhost:27017/hospital_management'), get_database_name())
 
         conn = redis.from_url(redis_url)
         task_queue = Queue(connection=conn)
@@ -83,7 +83,7 @@ def run_daily_report_job():
         from pymongo import MongoClient
 
         redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
-        mongo_uri = normalize_mongo_uri(os.getenv('MONGO_URI', 'mongodb://localhost:27017/hospital_management'), get_database_name())
+        mongo_uri = normalize_mongo_uri(get_configured_mongo_uri('mongodb://localhost:27017/hospital_management'), get_database_name())
 
         conn = redis.from_url(redis_url)
         task_queue = Queue(connection=conn)

@@ -3,15 +3,15 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import certifi
 import sys
-from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs
+from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs, get_configured_mongo_uri
 
-# Load environment variables (gets MONGO_URI for Atlas)
+# Load environment variables (gets Mongo URI for Atlas)
 load_dotenv()
 
 # Configuration
 LOCAL_URI = "mongodb://localhost:27017/"
 LOCAL_DB_NAME = "hospital_management"
-ATLAS_URI = normalize_mongo_uri(os.environ.get("MONGO_URI"), get_database_name())
+ATLAS_URI = normalize_mongo_uri(get_configured_mongo_uri(), get_database_name())
 
 def migrate():
     print("--- Starting Data Migration ---")
@@ -19,7 +19,7 @@ def migrate():
     print("Destination: MongoDB Atlas")
 
     if not ATLAS_URI:
-        print("Error: MONGO_URI not found in .env file.")
+        print("Error: MONGO_MASTER_URI / MONGO_URI not found in .env file.")
         return
 
     # 1. Connect to Local DB

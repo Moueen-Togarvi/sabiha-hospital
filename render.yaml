@@ -9,10 +9,12 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.8
+      - key: MONGO_MASTER_URI
+        sync: false
       - key: MONGO_URI
         sync: false
       - key: MONGO_DB_NAME
-        value: hospital_management
+        value: coded_cloud_care
       - key: SECRET_KEY
         generateValue: true
       - key: ENCRYPTION_KEY

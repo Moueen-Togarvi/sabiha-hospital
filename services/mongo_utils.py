@@ -7,6 +7,15 @@ def get_database_name(default: str = "hospital_management") -> str:
     return (os.getenv("MONGO_DB_NAME") or default).strip() or default
 
 
+def get_configured_mongo_uri(default: str | None = None) -> str | None:
+    """Prefer MONGO_MASTER_URI, then fall back to MONGO_URI, then an optional default."""
+    return (
+        os.getenv("MONGO_MASTER_URI")
+        or os.getenv("MONGO_URI")
+        or default
+    )
+
+
 def normalize_mongo_uri(uri: str | None, default_db_name: str | None = None) -> str | None:
     """Ensure a Mongo URI includes a database path when one is configured."""
     if not uri:

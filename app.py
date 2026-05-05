@@ -22,7 +22,7 @@ import jwt
 import redis
 from rq import Queue
 from services.encryption import encrypt_data, decrypt_data
-from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs
+from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs, get_configured_mongo_uri
 load_dotenv()
 
 app = Flask(__name__)
@@ -53,12 +53,14 @@ limiter = Limiter(
 )
 
 # --- CONFIGURATION ---
-mongo_uri = os.environ.get("MONGO_URI")
+mongo_uri = get_configured_mongo_uri()
 if mongo_uri:
     mongo_uri = mongo_uri.strip()
     # Handle accidental label inclusion (e.g., "MONGO_URI: mongodb+srv://...")
     if mongo_uri.lower().startswith("mongo_uri:"):
         mongo_uri = mongo_uri[10:].strip()
+    elif mongo_uri.lower().startswith("mongo_master_uri:"):
+        mongo_uri = mongo_uri[17:].strip()
     elif mongo_uri.lower().startswith("mongodb:"):
         # This is already a valid scheme, skip
         pass
@@ -69,7 +71,7 @@ if mongo_uri:
             mongo_uri = parts[1].strip()
 else:
     # Fallback for local dev if .env is missing, but Render will need this set
-    print("WARNING: MONGO_URI environment variable is not set. Database connection will fail.")
+    print("WARNING: MONGO_MASTER_URI / MONGO_URI environment variable is not set. Database connection will fail.")
     mongo_uri = "mongodb://localhost:27017/hospital_management" 
 mongo_uri = normalize_mongo_uri(mongo_uri, get_database_name())
 app.config["MONGO_URI"] = mongo_uri
@@ -4137,7 +4139,7 @@ def db_status():
     status = {
         "connected": check_db(),
         "has_mongo_obj": mongo is not None,
-        "uri_configured": "MONGO_URI" in os.environ,
+        "uri_configured": ("MONGO_MASTER_URI" in os.environ) or ("MONGO_URI" in os.environ),
         "timestamp": datetime.now().isoformat()
     }
     if mongo:
