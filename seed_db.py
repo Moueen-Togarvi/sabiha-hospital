@@ -4,17 +4,18 @@ from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash
 from dotenv import load_dotenv
 import random
+from services.mongo_utils import normalize_mongo_uri, get_database_name
 
 load_dotenv()
 
-MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/hospital_management")
+MONGO_URI = normalize_mongo_uri(os.environ.get("MONGO_URI", "mongodb://localhost:27017/hospital_management"), get_database_name())
 DEFAULT_ADMIN_USERNAME = os.environ.get("DEFAULT_ADMIN_USERNAME", "sabihaadmin")
 DEFAULT_ADMIN_PASSWORD = os.environ.get("DEFAULT_ADMIN_PASSWORD", "Sabiha@123")
 DEFAULT_ADMIN_NAME = os.environ.get("DEFAULT_ADMIN_NAME", "Sabiha Admin")
 
 def seed():
     client = MongoClient(MONGO_URI)
-    db = client.get_default_database()
+    db = client[get_database_name()]
     
     print(f"Seeding database: {db.name}")
 

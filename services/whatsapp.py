@@ -9,13 +9,14 @@ import logging
 from datetime import datetime
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from services.mongo_utils import normalize_mongo_uri, get_database_name
 
 load_dotenv()
 
 logger = logging.getLogger(__name__)
 
 # ── Database (worker process has its own connection) ──────────────────────────
-MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/hospital_management')
+MONGO_URI = normalize_mongo_uri(os.getenv('MONGO_URI', 'mongodb://localhost:27017/hospital_management'), get_database_name())
 _client = None
 _db = None
 
@@ -23,7 +24,7 @@ def _get_db():
     global _client, _db
     if _db is None:
         _client = MongoClient(MONGO_URI)
-        _db = _client.get_default_database()
+        _db = _client[get_database_name()]
     return _db
 
 

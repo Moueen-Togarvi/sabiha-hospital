@@ -21,6 +21,7 @@ import jwt
 import redis
 from rq import Queue
 from services.encryption import encrypt_data, decrypt_data
+from services.mongo_utils import normalize_mongo_uri, get_database_name
 load_dotenv()
 
 app = Flask(__name__)
@@ -52,6 +53,7 @@ else:
     # Fallback for local dev if .env is missing, but Render will need this set
     print("WARNING: MONGO_URI environment variable is not set. Database connection will fail.")
     mongo_uri = "mongodb://localhost:27017/hospital_management" 
+mongo_uri = normalize_mongo_uri(mongo_uri, get_database_name())
 app.config["MONGO_URI"] = mongo_uri
 
 secret_key = os.environ.get("SECRET_KEY", "06e4b4738ab81f94277a7216b5e79fb24b339f28a6a131391d8d6f8f0a295dc1")
