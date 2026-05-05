@@ -12,7 +12,7 @@ import logging
 from datetime import datetime
 
 from dotenv import load_dotenv
-from services.mongo_utils import normalize_mongo_uri, get_database_name
+from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs
 
 load_dotenv()
 
@@ -36,7 +36,7 @@ def run_billing_job():
 
         conn = redis.from_url(redis_url)
         task_queue = Queue(connection=conn)
-        db = MongoClient(mongo_uri)[get_database_name()]
+        db = MongoClient(mongo_uri, **get_mongo_client_kwargs(mongo_uri))[get_database_name()]
 
         now = datetime.now()
         month_year = now.strftime('%B %Y')
@@ -87,7 +87,7 @@ def run_daily_report_job():
 
         conn = redis.from_url(redis_url)
         task_queue = Queue(connection=conn)
-        db = MongoClient(mongo_uri)[get_database_name()]
+        db = MongoClient(mongo_uri, **get_mongo_client_kwargs(mongo_uri))[get_database_name()]
 
         today = datetime.now().date().isoformat()
 

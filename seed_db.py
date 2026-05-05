@@ -6,7 +6,7 @@ from pymongo import MongoClient
 from werkzeug.security import generate_password_hash
 
 from services.encryption import encrypt_data
-from services.mongo_utils import normalize_mongo_uri, get_database_name
+from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs
 
 load_dotenv()
 
@@ -103,7 +103,7 @@ def _insert_if_empty(db, collection_name: str, docs: list[dict]):
 
 
 def seed():
-    client = MongoClient(MONGO_URI)
+    client = MongoClient(MONGO_URI, **get_mongo_client_kwargs(MONGO_URI))
     db = client[DB_NAME]
 
     print(f"Seeding database: {db.name}")

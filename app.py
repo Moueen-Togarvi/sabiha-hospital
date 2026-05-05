@@ -22,7 +22,7 @@ import jwt
 import redis
 from rq import Queue
 from services.encryption import encrypt_data, decrypt_data
-from services.mongo_utils import normalize_mongo_uri, get_database_name
+from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs
 load_dotenv()
 
 app = Flask(__name__)
@@ -88,7 +88,7 @@ LEGACY_ADMIN_USERNAME = "ImranSaab"
 PROTECTED_ADMIN_USERNAMES = {DEFAULT_ADMIN_USERNAME, LEGACY_ADMIN_USERNAME}
 
 try:
-    mongo = PyMongo(app)
+    mongo = PyMongo(app, **get_mongo_client_kwargs(app.config["MONGO_URI"]))
     # Trigger a simple operation to verify connection
     with app.app_context():
         # Using a timeout to ensure startup doesn't hang indefinitely

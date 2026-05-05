@@ -1,5 +1,6 @@
 import os
 from urllib.parse import urlsplit, urlunsplit
+import certifi
 
 
 def get_database_name(default: str = "hospital_management") -> str:
@@ -23,3 +24,26 @@ def normalize_mongo_uri(uri: str | None, default_db_name: str | None = None) -> 
         return uri
 
     return urlunsplit((parsed.scheme, parsed.netloc, f"/{db_name}", parsed.query, parsed.fragment))
+
+
+def get_mongo_client_kwargs(uri: str | None) -> dict:
+    """Return stable client kwargs for local Mongo and Atlas connections."""
+    if not uri:
+        return {}
+
+    parsed = urlsplit(uri)
+    if parsed.scheme == "mongodb+srv":
+        return {
+            "tls": True,
+            "tlsCAFile": certifi.where(),
+            "serverSelectionTimeoutMS": 30000,
+            "connectTimeoutMS": 30000,
+            "socketTimeoutMS": 30000,
+            "retryWrites": True,
+        }
+
+    return {
+        "serverSelectionTimeoutMS": 30000,
+        "connectTimeoutMS": 30000,
+        "socketTimeoutMS": 30000,
+    }

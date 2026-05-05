@@ -9,7 +9,7 @@ import logging
 from datetime import datetime
 from pymongo import MongoClient
 from dotenv import load_dotenv
-from services.mongo_utils import normalize_mongo_uri, get_database_name
+from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs
 
 load_dotenv()
 
@@ -23,7 +23,7 @@ _db = None
 def _get_db():
     global _client, _db
     if _db is None:
-        _client = MongoClient(MONGO_URI)
+        _client = MongoClient(MONGO_URI, **get_mongo_client_kwargs(MONGO_URI))
         _db = _client[get_database_name()]
     return _db
 

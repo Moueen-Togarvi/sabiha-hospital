@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import certifi
 import sys
-from services.mongo_utils import normalize_mongo_uri, get_database_name
+from services.mongo_utils import normalize_mongo_uri, get_database_name, get_mongo_client_kwargs
 
 # Load environment variables (gets MONGO_URI for Atlas)
 load_dotenv()
@@ -40,7 +40,11 @@ def migrate():
     try:
         # Use certifi for SSL validity
         uuid_representation='standard'
-        atlas_client = MongoClient(ATLAS_URI, tlsCAFile=certifi.where(), uuidRepresentation=uuid_representation)
+        atlas_client = MongoClient(
+            ATLAS_URI,
+            uuidRepresentation=uuid_representation,
+            **get_mongo_client_kwargs(ATLAS_URI)
+        )
         atlas_db = atlas_client[get_database_name()]
         print(f"Connected to Atlas DB: {atlas_db.name}")
     except Exception as e:
@@ -48,7 +52,11 @@ def migrate():
         # Fallback: Try without certifi if it fails (sometimes needed depending on env)
         try:
              print("Retrying Atlas connection without explicit CA file...")
-             atlas_client = MongoClient(ATLAS_URI, uuidRepresentation='standard')
+             atlas_client = MongoClient(
+                 ATLAS_URI,
+                 uuidRepresentation='standard',
+                 **get_mongo_client_kwargs(ATLAS_URI)
+             )
              atlas_db = atlas_client[get_database_name()]
              print(f"Connected to Atlas DB (retry success): {atlas_db.name}")
         except Exception as e2:
