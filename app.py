@@ -3,6 +3,7 @@ from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.middleware.proxy_fix import ProxyFix
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from email.message import EmailMessage
 import smtplib
@@ -25,10 +26,27 @@ from services.mongo_utils import normalize_mongo_uri, get_database_name
 load_dotenv()
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 CORS(app)
 Talisman(app, content_security_policy=None, force_https=False)  # Disabled force_https for local development
+
+
+def get_client_ip():
+    """Use real client IPs behind Render's proxy for rate limiting."""
+    forwarded_for = request.headers.get("X-Forwarded-For", "")
+    if forwarded_for:
+        ip = forwarded_for.split(",")[0].strip()
+        if ip:
+            return ip
+    return (
+        request.headers.get("CF-Connecting-IP")
+        or request.headers.get("X-Real-IP")
+        or get_remote_address()
+    )
+
+
 limiter = Limiter(
-    get_remote_address,
+    key_func=get_client_ip,
     app=app,
     default_limits=["200 per day", "50 per hour"],
     storage_uri="memory://",
@@ -113,6 +131,7 @@ def clean_input_data(data):
 def ensure_initial_admin():
     """Ensure the primary admin exists and migrate the old legacy admin if needed."""
     if check_db():
+        admin_email = os.environ.get('ADMIN_EMAIL', 'admin@example.com').strip().lower()
         legacy_admin = mongo.db.users.find_one({'username': LEGACY_ADMIN_USERNAME})
         target_admin = mongo.db.users.find_one({'username': DEFAULT_ADMIN_USERNAME})
 
@@ -123,23 +142,28 @@ def ensure_initial_admin():
                     'username': DEFAULT_ADMIN_USERNAME,
                     'password': generate_password_hash(DEFAULT_ADMIN_PASSWORD),
                     'name': DEFAULT_ADMIN_NAME,
-                    'email': os.environ.get('ADMIN_EMAIL', legacy_admin.get('email', 'admin@example.com')).strip().lower(),
+                    'email': admin_email or legacy_admin.get('email', 'admin@example.com'),
+                    'role': 'Admin',
                     'updated_at': datetime.now()
-                }}
+                }, '$unset': {'deleted_at': ''}}
             )
             print(f"Legacy admin '{LEGACY_ADMIN_USERNAME}' migrated to '{DEFAULT_ADMIN_USERNAME}'.")
             return
 
-        if mongo.db.users.count_documents({}) == 0:
+        if not target_admin:
             admin_user = {
                 'username': DEFAULT_ADMIN_USERNAME,
                 'password': generate_password_hash(DEFAULT_ADMIN_PASSWORD),
                 'role': 'Admin',
                 'name': DEFAULT_ADMIN_NAME,
-                'email': os.environ.get('ADMIN_EMAIL', 'admin@example.com').strip().lower(),
+                'email': admin_email,
                 'created_at': datetime.now()
             }
-            mongo.db.users.insert_one(admin_user)
+            mongo.db.users.update_one(
+                {'username': DEFAULT_ADMIN_USERNAME},
+                {'$set': admin_user, '$unset': {'deleted_at': ''}},
+                upsert=True
+            )
             print(f"Initial admin user '{DEFAULT_ADMIN_USERNAME}' created.")
 
 def create_indices():
@@ -343,7 +367,7 @@ def index():
     return render_template('index.html')
 
 @app.route('/api/auth/login', methods=['POST'])
-@limiter.limit("5 per minute")
+@limiter.limit("10 per minute")
 def login():
     if not check_db(): return jsonify({"error": "Database error"}), 500
     data = clean_input_data(request.json)
@@ -4128,6 +4152,15 @@ def db_status():
 def ping():
     """Ultra-minimal ping endpoint - even lighter than /health"""
     return '', 200
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, 'static', 'icons'),
+        'icon-192.png',
+        mimetype='image/png'
+    )
     
 
 # =============================================================

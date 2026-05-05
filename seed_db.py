@@ -1,152 +1,236 @@
 import os
-from pymongo import MongoClient
 from datetime import datetime, timedelta
-from werkzeug.security import generate_password_hash
+
 from dotenv import load_dotenv
-import random
+from pymongo import MongoClient
+from werkzeug.security import generate_password_hash
+
+from services.encryption import encrypt_data
 from services.mongo_utils import normalize_mongo_uri, get_database_name
 
 load_dotenv()
 
-MONGO_URI = normalize_mongo_uri(os.environ.get("MONGO_URI", "mongodb://localhost:27017/hospital_management"), get_database_name())
+MONGO_URI = normalize_mongo_uri(
+    os.environ.get("MONGO_URI", "mongodb://localhost:27017/hospital_management"),
+    get_database_name(),
+)
+DB_NAME = get_database_name()
 DEFAULT_ADMIN_USERNAME = os.environ.get("DEFAULT_ADMIN_USERNAME", "sabihaadmin")
 DEFAULT_ADMIN_PASSWORD = os.environ.get("DEFAULT_ADMIN_PASSWORD", "Sabiha@123")
 DEFAULT_ADMIN_NAME = os.environ.get("DEFAULT_ADMIN_NAME", "Sabiha Admin")
+ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "admin@example.com").strip().lower()
+
+
+def _now():
+    return datetime.now()
+
+
+def _encrypt_patient(doc: dict) -> dict:
+    payload = dict(doc)
+    for key in ["name", "contactNo", "cnic", "guardianName", "guardianPhone"]:
+        if payload.get(key):
+            payload[key] = encrypt_data(str(payload[key]))
+    return payload
+
+
+def _upsert_user(db, user: dict):
+    now = _now()
+    db.users.update_one(
+        {"username": user["username"]},
+        {
+            "$set": {
+                "password": generate_password_hash(user["password"]),
+                "role": user["role"],
+                "name": user["name"],
+                "email": user["email"].strip().lower(),
+                "updated_at": now,
+            },
+            "$setOnInsert": {
+                "created_at": now,
+            },
+            "$unset": {
+                "deleted_at": "",
+            },
+        },
+        upsert=True,
+    )
+
+
+def _upsert_patient(db, patient: dict):
+    now = _now()
+    encrypted = _encrypt_patient(patient)
+    db.patients.update_one(
+        {"cnic": encrypted["cnic"]},
+        {
+            "$set": {
+                **encrypted,
+                "updated_at": now,
+            },
+            "$setOnInsert": {
+                "created_at": patient.get("created_at", now),
+            },
+            "$unset": {
+                "deleted_at": "",
+            },
+        },
+        upsert=True,
+    )
+
+
+def _ensure_employee(db, employee: dict):
+    now = _now()
+    db.employees.update_one(
+        {"name": employee["name"]},
+        {
+            "$set": {
+                **employee,
+                "updated_at": now,
+            },
+            "$setOnInsert": {"created_at": now},
+            "$unset": {"deleted_at": ""},
+        },
+        upsert=True,
+    )
+
+
+def _insert_if_empty(db, collection_name: str, docs: list[dict]):
+    collection = db[collection_name]
+    if collection.count_documents({}) == 0 and docs:
+        collection.insert_many(docs)
+        print(f"Seeded {collection_name}: {len(docs)} docs")
+    else:
+        print(f"Skipped {collection_name}: existing data present")
+
 
 def seed():
     client = MongoClient(MONGO_URI)
-    db = client[get_database_name()]
-    
+    db = client[DB_NAME]
+
     print(f"Seeding database: {db.name}")
 
-    # 1. Clear existing data
-    collections = [
-        "users", "patients", "canteen_sales", "expenses", "psych_sessions", 
-        "patient_records", "employees", "attendance", "overheads", 
-        "utility_bills", "old_balances", "daily_reports", "call_meeting_tracker",
-        "emergency_alerts", "report_config", "manual_discharge_receipts"
-    ]
-    for coll in collections:
-        db[coll].delete_many({})
-
-    # 2. Seed Users
-    admin_password = generate_password_hash(DEFAULT_ADMIN_PASSWORD)
     users = [
-        {"username": DEFAULT_ADMIN_USERNAME, "password": admin_password, "role": "Admin", "name": DEFAULT_ADMIN_NAME, "email": "admin@example.com", "created_at": datetime.now()},
-        {"username": "doctor1", "password": generate_password_hash("doctor123"), "role": "Doctor", "name": "Dr. Smith", "email": "doctor@example.com", "created_at": datetime.now()},
-        {"username": "psych1", "password": generate_password_hash("psych123"), "role": "Psychologist", "name": "Dr. Jane Doe", "email": "psych@example.com", "created_at": datetime.now()},
-        {"username": "staff1", "password": generate_password_hash("staff123"), "role": "Staff", "name": "Staff Member", "email": "staff@example.com", "created_at": datetime.now()}
-    ]
-    db.users.insert_many(users)
-    print("Users seeded.")
-
-    # 3. Seed Patients
-    patients_data = [
         {
-            "name": "Ali Ahmed", "admissionDate": (datetime.now() - timedelta(days=45)).isoformat(),
-            "monthlyFee": "25,000", "monthlyAllowance": "3,000", "receivedAmount": "30,000",
-            "drug": "Heroin", "isDischarged": False, "created_at": datetime.now() - timedelta(days=45),
-            "laundryStatus": True, "laundryAmount": 3500, "gender": "Male", "age": "28", "phone": "0300-1234567"
+            "username": DEFAULT_ADMIN_USERNAME,
+            "password": DEFAULT_ADMIN_PASSWORD,
+            "role": "Admin",
+            "name": DEFAULT_ADMIN_NAME,
+            "email": ADMIN_EMAIL,
         },
         {
-            "name": "Usman Khan", "admissionDate": (datetime.now() - timedelta(days=10)).isoformat(),
-            "monthlyFee": "30,000", "monthlyAllowance": "5,000", "receivedAmount": "10,000",
-            "drug": "Ice", "isDischarged": False, "created_at": datetime.now() - timedelta(days=10),
-            "laundryStatus": False, "laundryAmount": 0, "gender": "Male", "age": "24", "phone": "0321-7654321"
+            "username": "sabiha.doctor",
+            "password": "Doctor@123",
+            "role": "Doctor",
+            "name": "Dr. Sabiha Ashraf",
+            "email": "doctor@sabiha.example",
         },
         {
-            "name": "Zubair Qureshi", "admissionDate": (datetime.now() - timedelta(days=100)).isoformat(),
-            "dischargeDate": (datetime.now() - timedelta(days=5)).isoformat(),
-            "monthlyFee": "20,000", "monthlyAllowance": "2,000", "receivedAmount": "65,000",
-            "drug": "Alcohol", "isDischarged": True, "created_at": datetime.now() - timedelta(days=100),
-            "laundryStatus": True, "laundryAmount": 3500, "gender": "Male", "age": "35", "phone": "0333-9876543"
-        }
+            "username": "sabiha.psych",
+            "password": "Psych@123",
+            "role": "Psychologist",
+            "name": "Dr. Hina Psychologist",
+            "email": "psych@sabiha.example",
+        },
+        {
+            "username": "sabiha.staff",
+            "password": "Staff@123",
+            "role": "General Staff",
+            "name": "Ali Raza Staff",
+            "email": "staff@sabiha.example",
+        },
     ]
-    patient_ids = db.patients.insert_many(patients_data).inserted_ids
-    print(f"Patients seeded: {len(patient_ids)}")
+    for user in users:
+        _upsert_user(db, user)
+    print(f"Users upserted: {len(users)}")
 
-    # 4. Seed Employees
-    employees_data = [
-        {"name": "Muhammad Rizwan", "role": "Security", "salary": 25000, "advance": 0, "created_at": datetime.now()},
-        {"name": "Abdul Hafeez", "role": "Kitchen Staff", "salary": 20000, "advance": 500, "advance_month": datetime.now().month, "advance_year": datetime.now().year, "created_at": datetime.now()},
-        {"name": "Sajid Mahmood", "role": "Sweeper", "salary": 18000, "advance": 0, "created_at": datetime.now()}
+    patients = [
+        {
+            "name": "Sajid Hussain",
+            "fatherName": "Ghulam Hussain",
+            "contactNo": "0300-1234567",
+            "guardianName": "Nadeem Hussain",
+            "guardianPhone": "0301-9876543",
+            "cnic": "35202-1234567-1",
+            "admissionDate": (_now() - timedelta(days=18)).isoformat(),
+            "monthlyFee": "45,000",
+            "monthlyAllowance": "5,000",
+            "receivedAmount": "25,000",
+            "drug": "Ice",
+            "isDischarged": False,
+            "gender": "Male",
+            "age": "29",
+            "laundryStatus": True,
+            "laundryAmount": 3500,
+        },
+        {
+            "name": "Ahsan Raza",
+            "fatherName": "Muhammad Raza",
+            "contactNo": "0312-4567890",
+            "guardianName": "Imran Raza",
+            "guardianPhone": "0313-1231234",
+            "cnic": "35201-7654321-9",
+            "admissionDate": (_now() - timedelta(days=7)).isoformat(),
+            "monthlyFee": "40,000",
+            "monthlyAllowance": "4,000",
+            "receivedAmount": "15,000",
+            "drug": "Heroin",
+            "isDischarged": False,
+            "gender": "Male",
+            "age": "25",
+            "laundryStatus": False,
+            "laundryAmount": 0,
+        },
+        {
+            "name": "Zubair Qureshi",
+            "fatherName": "Abdul Qureshi",
+            "contactNo": "0333-9876543",
+            "guardianName": "Noman Qureshi",
+            "guardianPhone": "0331-1112233",
+            "cnic": "35202-9876543-5",
+            "admissionDate": (_now() - timedelta(days=102)).isoformat(),
+            "dischargeDate": (_now() - timedelta(days=4)).isoformat(),
+            "monthlyFee": "35,000",
+            "monthlyAllowance": "3,000",
+            "receivedAmount": "65,000",
+            "drug": "Alcohol",
+            "isDischarged": True,
+            "gender": "Male",
+            "age": "35",
+            "laundryStatus": True,
+            "laundryAmount": 3500,
+        },
     ]
-    employee_ids = db.employees.insert_many(employees_data).inserted_ids
-    print(f"Employees seeded: {len(employee_ids)}")
+    for patient in patients:
+        _upsert_patient(db, patient)
+    print(f"Patients upserted: {len(patients)}")
 
-    # 5. Seed Attendance
-    now = datetime.now()
-    attendance_data = []
-    for emp_id in employee_ids:
-        days = {str(d): "P" for d in range(1, now.day + 1)}
-        attendance_data.append({
-            "employee_id": emp_id,
-            "month": now.month,
-            "year": now.year,
-            "days": days
-        })
-    db.attendance.insert_many(attendance_data)
-    print("Attendance seeded.")
-
-    # 6. Seed Overheads
-    overheads_data = []
-    for d in range(1, now.day + 1):
-        overheads_data.append({
-            "date": now.replace(day=d).strftime("%Y-%m-%d"),
-            "month": now.month,
-            "year": now.year,
-            "kitchen": random.randint(500, 2000),
-            "others": random.randint(100, 500),
-            "pay_advance": 0,
-            "income": random.randint(0, 1000)
-        })
-    db.overheads.insert_many(overheads_data)
-    print("Overheads seeded.")
-
-    # 7. Seed Expenses
-    expenses_data = [
-        {"type": "outgoing", "amount": 5000, "category": "Kitchen", "note": "Weekly Grocery", "date": datetime.now() - timedelta(days=3), "recorded_by": DEFAULT_ADMIN_USERNAME},
-        {"type": "outgoing", "amount": 2000, "category": "Electricity", "note": "Bill payment", "date": datetime.now() - timedelta(days=10), "recorded_by": DEFAULT_ADMIN_USERNAME},
-        {"type": "incoming", "amount": 10000, "category": "Donation", "note": "Anonymous donor", "date": datetime.now() - timedelta(days=15), "recorded_by": DEFAULT_ADMIN_USERNAME},
-        {"type": "incoming", "amount": 25000, "category": "Patient Fee", "note": "Fee for Ali Ahmed", "patient_id": str(patient_ids[0]), "date": datetime.now() - timedelta(days=5), "recorded_by": DEFAULT_ADMIN_USERNAME}
+    employees = [
+        {"name": "Muhammad Rizwan", "designation": "Security Guard", "salary": 25000, "phone": "0305-1111111"},
+        {"name": "Abdul Hafeez", "designation": "Kitchen Staff", "salary": 20000, "phone": "0305-2222222"},
+        {"name": "Sajid Mahmood", "designation": "Sweeper", "salary": 18000, "phone": "0305-3333333"},
     ]
-    db.expenses.insert_many(expenses_data)
-    print("Expenses seeded.")
+    for employee in employees:
+        _ensure_employee(db, employee)
+    print(f"Employees upserted: {len(employees)}")
 
-    # 8. Seed Canteen Sales
-    canteen_sales = [
-        {"patient_id": str(patient_ids[0]), "amount": 150, "item": "Tea", "date": datetime.now() - timedelta(days=1), "recorded_by": DEFAULT_ADMIN_USERNAME},
-        {"patient_id": str(patient_ids[0]), "amount": 500, "item": "Lunch", "date": datetime.now() - timedelta(days=2), "recorded_by": DEFAULT_ADMIN_USERNAME},
-        {"patient_id": str(patient_ids[1]), "amount": 200, "item": "Cigarettes", "date": datetime.now() - timedelta(days=1), "recorded_by": DEFAULT_ADMIN_USERNAME}
-    ]
-    db.canteen_sales.insert_many(canteen_sales)
-    print("Canteen sales seeded.")
+    _insert_if_empty(
+        db,
+        "utility_bills",
+        [
+            {"type": "Electricity", "amount": 15000, "month": _now().month, "year": _now().year, "status": "Paid", "date": _now() - timedelta(days=5)},
+            {"type": "Gas", "amount": 4000, "month": _now().month, "year": _now().year, "status": "Pending", "date": _now() - timedelta(days=2)},
+        ],
+    )
 
-    # 9. Seed Psych Sessions
-    psych_sessions = [
-        {"patient_id": str(patient_ids[0]), "date": datetime.now() - timedelta(days=1), "notes": "Patient showing progress.", "conducted_by": "psych1"},
-        {"patient_id": str(patient_ids[1]), "date": datetime.now(), "notes": "Initial assessment done.", "conducted_by": "psych1"}
-    ]
-    db.psych_sessions.insert_many(psych_sessions)
-    print("Psych sessions seeded.")
+    _insert_if_empty(
+        db,
+        "report_config",
+        [{"_id": "main_config", "updated_at": _now(), "day_columns": [], "night_columns": []}],
+    )
 
-    # 10. Seed Patient Records
-    patient_records = [
-        {"patient_id": patient_ids[0], "type": "session_note", "text": "Patient is responding well to therapy.", "date": datetime.now() - timedelta(days=10), "recorded_by": "psych1"},
-        {"patient_id": patient_ids[0], "type": "medical_record", "text": "Blood pressure normal.", "date": datetime.now() - timedelta(days=5), "recorded_by": "doctor1"}
-    ]
-    db.patient_records.insert_many(patient_records)
-    print("Patient records seeded.")
+    print("\n--- Sabiha seed completed successfully ---")
+    print(f"Admin username: {DEFAULT_ADMIN_USERNAME}")
+    print(f"Admin password: {DEFAULT_ADMIN_PASSWORD}")
 
-    # 11. Seed Utility Bills
-    utility_bills = [
-        {"type": "Electricity", "amount": 15000, "month": now.month, "year": now.year, "status": "Paid", "date": datetime.now() - timedelta(days=5)},
-        {"type": "Gas", "amount": 4000, "month": now.month, "year": now.year, "status": "Pending", "date": datetime.now() - timedelta(days=2)}
-    ]
-    db.utility_bills.insert_many(utility_bills)
-    print("Utility bills seeded.")
-
-    print("\n--- All Collections Seeded Successfully ---")
 
 if __name__ == "__main__":
     seed()
