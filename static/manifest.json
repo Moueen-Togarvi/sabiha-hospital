@@ -1,12 +1,12 @@
 {
-  "name": "PRO — Pakistan Recovery Oasis",
-  "short_name": "PRO",
-  "description": "Patient management and family dashboard for Pakistan Recovery Oasis",
+  "name": "Sabiha Ashraf Care Center",
+  "short_name": "SACC",
+  "description": "Patient management and family dashboard for Sabiha Ashraf Care Center",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#1a3c5e",
-  "theme_color": "#1a3c5e",
+  "background_color": "#f7f8ff",
+  "theme_color": "#3455f3",
   "lang": "en",
   "scope": "/",
   "icons": [

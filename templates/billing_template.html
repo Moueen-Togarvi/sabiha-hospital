@@ -8,75 +8,84 @@
     size: A4;
     margin: 20mm;
   }
+  :root {
+    --brand-blue: #3455f3;
+    --brand-blue-deep: #243bb0;
+    --brand-orange: #f47a3c;
+    --brand-orange-deep: #d85f22;
+    --brand-gold: #f5c84b;
+    --brand-ink: #101827;
+    --brand-soft: #eef2ff;
+    --brand-border: #cdd8ff;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Arial', sans-serif; }
   body { font-size: 9pt; color: #333; background: #fff; padding-bottom: 50px; }
 
   /* Header */
-  .header-table { width: 100%; margin-bottom: 20px; border-bottom: 2px solid #555; padding-bottom: 10px; }
+  .header-table { width: 100%; margin-bottom: 20px; border-bottom: 2px solid var(--brand-blue); padding-bottom: 10px; }
   .header-table td { vertical-align: top; }
   
   .logo-col { width: 15%; text-align: left; }
-  .logo-placeholder { width: 70px; height: 70px; background: #333; border-radius: 50%; display: inline-block; position: relative; overflow: hidden; }
-  .logo-placeholder::before { content: ""; position: absolute; left: 45%; top: 10%; width: 5px; height: 80%; background: #fff; } /* Brain slit mimic */
+  .logo-img { width: 74px; height: 74px; object-fit: contain; display: inline-block; }
 
   .center-col { width: 55%; text-align: center; line-height: 1.4; color: #555; }
-  .center-col .pro-title { font-size: 18pt; font-weight: 900; color: #222; letter-spacing: 1px; margin-bottom: 2px; }
-  .center-col .pro-sub { font-size: 11pt; font-weight: 700; color: #444; letter-spacing: 0.5px; }
+  .center-col .pro-title { font-size: 16pt; font-weight: 900; color: var(--brand-blue-deep); letter-spacing: 1px; margin-bottom: 2px; }
+  .center-col .pro-sub { font-size: 11pt; font-weight: 800; color: var(--brand-orange); letter-spacing: 2px; }
   .center-col .pro-desc { font-size: 8pt; color: #888; }
   
   .right-col { width: 30%; text-align: right; }
-  .right-col h1 { font-size: 18pt; font-weight: 800; color: #333; margin-top: 5px; margin-bottom: 5px; }
+  .right-col h1 { font-size: 18pt; font-weight: 800; color: var(--brand-ink); margin-top: 5px; margin-bottom: 5px; }
   .right-col .date { font-size: 9pt; color: #666; }
 
   /* Info Table */
-  .info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; border: 1px solid #ddd; background: #fcfcfc; }
-  .info-table td { padding: 6px 10px; border: 1px solid #ddd; }
+  .info-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; border: 1px solid var(--brand-border); background: #fcfcff; }
+  .info-table td { padding: 6px 10px; border: 1px solid var(--brand-border); }
   .info-table .label { font-size: 8pt; color: #666; width: 15%; }
-  .info-table .val { font-size: 9pt; font-weight: bold; color: #222; width: 35%; }
+  .info-table .val { font-size: 9pt; font-weight: bold; color: var(--brand-ink); width: 35%; }
 
   /* Common Table Styles */
-  .data-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; border: 1px solid #777; }
-  .data-table th, .data-table td { padding: 6px 10px; border: 1px solid #aaa; }
+  .data-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; border: 1px solid #8ba0ff; }
+  .data-table th, .data-table td { padding: 6px 10px; border: 1px solid #bcc8ff; }
   
   /* Account Summary */
   .summary-title { text-align: center; font-size: 10pt; font-weight: bold; margin-bottom: 5px; }
-  .summary-header { background: #777; color: #fff; font-weight: bold; text-align: left; }
+  .summary-header { background: var(--brand-blue); color: #fff; font-weight: bold; text-align: left; }
   .summary-header.right { text-align: right; }
   .data-table.summary td:first-child { width: 80%; }
   .data-table.summary td:last-child { width: 20%; text-align: right; font-weight: bold; }
   
-  .gross-row td { background: #f4f4f4; font-weight: bold; }
+  .gross-row td { background: #f6f8ff; font-weight: bold; }
   .gross-row td:first-child { text-align: right; }
 
-  .balance-row td { font-size: 14pt; font-weight: 900; background: #eee; padding: 10px; }
-  .balance-row td:first-child { text-align: left; color: #444; }
-  .balance-row td:last-child { text-align: right; color: #222; }
+  .balance-row td { font-size: 14pt; font-weight: 900; background: #fff1e9; padding: 10px; }
+  .balance-row td:first-child { text-align: left; color: var(--brand-orange-deep); }
+  .balance-row td:last-child { text-align: right; color: var(--brand-ink); }
 
   /* Payment History */
-  .history-header { background: #222; color: #fff; font-size: 8pt; text-align: left; text-transform: uppercase; }
-  .history-header th { padding: 4px 10px; border: 1px solid #444; }
+  .history-header { background: var(--brand-blue-deep); color: #fff; font-size: 8pt; text-align: left; text-transform: uppercase; }
+  .history-header th { padding: 4px 10px; border: 1px solid #1b2a7a; }
   .data-table.history td { font-size: 8pt; font-style: italic; color: #555; }
-  .data-table.history .amt { text-align: right; font-weight: bold; font-style: normal; color: #222; }
+  .data-table.history .amt { text-align: right; font-weight: bold; font-style: normal; color: var(--brand-ink); }
   
-  .total-adv-row td { background: #f9f9f9; font-weight: bold; font-size: 9pt; }
+  .total-adv-row td { background: var(--brand-soft); font-weight: bold; font-size: 9pt; }
   .total-adv-row td:first-child { text-align: right; font-style: italic; }
 
   /* Big Box */
   .big-box-container { text-align: center; margin: 30px 0; }
-  .big-box { display: inline-block; background: #555; color: #fff; padding: 15px 40px; border-radius: 4px; border: 2px solid #444; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
-  .big-box .bb-label { font-size: 9pt; text-transform: uppercase; letter-spacing: 1px; color: #ddd; margin-bottom: 5px; }
+  .big-box { display: inline-block; background: linear-gradient(135deg, var(--brand-blue), var(--brand-blue-deep)); color: #fff; padding: 15px 40px; border-radius: 8px; border: 2px solid #1d2f8d; box-shadow: 2px 8px 20px rgba(36, 59, 176, 0.2); }
+  .big-box .bb-label { font-size: 9pt; text-transform: uppercase; letter-spacing: 1px; color: #e8edff; margin-bottom: 5px; }
   .big-box .bb-val { font-size: 18pt; font-weight: bold; letter-spacing: 1px; }
 
   /* Footer & Sigs */
   .footer-area { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 50px; }
-  .sig-line { width: 200px; border-top: 1px solid #333; text-align: center; padding-top: 5px; font-size: 9pt; color: #333; }
+  .sig-line { width: 200px; border-top: 1px solid #333; text-align: center; padding-top: 5px; font-size: 9pt; color: var(--brand-ink); }
   
   .qr-area { text-align: center; }
   .qr-area img { width: 80px; height: 80px; border: 1px solid #ddd; padding: 2px; }
   .qr-area .qr-txt { font-size: 7pt; color: #666; margin-top: 2px; text-transform: uppercase; font-weight: bold; }
 
   /* Watermark */
-  .paid-stamp { position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 70pt; font-weight: 900; color: rgba(22, 163, 74, 0.1); pointer-events: none; z-index: -1; }
+  .paid-stamp { position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 70pt; font-weight: 900; color: rgba(52, 85, 243, 0.08); pointer-events: none; z-index: -1; }
 </style>
 </head>
 <body>
@@ -88,11 +97,11 @@
 <table class="header-table">
   <tr>
     <td class="logo-col">
-      <div class="logo-placeholder"></div>
+      <img class="logo-img" src="data:image/png;base64,{{ logo_b64 }}" alt="Sabiha Ashraf Care Center logo">
     </td>
     <td class="center-col">
-      <div class="pro-title">PRO</div>
-      <div class="pro-sub">PAKISTAN RECOVERY OASIS</div>
+      <div class="pro-title">SABIHA ASHRAF</div>
+      <div class="pro-sub">CARE CENTER</div>
       <div class="pro-desc">Addiction Treatment & Psychological Services</div>
       <div class="pro-desc">Lahore, Pakistan</div>
       <div class="pro-desc">📞 +92-321-4475444</div>

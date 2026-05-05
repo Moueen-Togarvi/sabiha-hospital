@@ -1,9 +1,9 @@
 /**
- * PRO System v2.0 — Service Worker
+ * Sabiha Ashraf Care Center service worker.
  * Provides offline shell caching for mobile-first PWA experience.
  */
 
-const CACHE_NAME = 'pro-v2-shell-v5';
+const CACHE_NAME = 'sacc-shell-v1';
 const OFFLINE_URL = '/';
 
 // Shell assets to cache on install
@@ -75,7 +75,7 @@ self.addEventListener('fetch', (event) => {
 // ── Push Notifications ────────────────────────────────────────────────────────
 self.addEventListener('push', (event) => {
   const data = event.data ? event.data.json() : {};
-  const title = data.title || 'PRO — Pakistan Recovery Oasis';
+  const title = data.title || 'Sabiha Ashraf Care Center';
   const options = {
     body: data.body || 'You have a new notification.',
     icon: '/static/icons/icon-192.png',

@@ -1,5 +1,5 @@
 """
-PDF Billing Engine — PRO System v2.0
+PDF billing engine for Sabiha Ashraf Care Center.
 Uses Puppeteer (via pyppeteer) for high-fidelity CSS-to-PDF rendering.
 """
 import os
@@ -13,6 +13,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 logger = logging.getLogger(__name__)
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), '..', 'templates')
+LOGO_PATH = os.path.join(os.path.dirname(__file__), '..', 'static', 'icons', 'icon-512.png')
 
 async def _render_with_puppeteer(html_content: str) -> bytes:
     """Uses pyppeteer to render HTML to a professional PDF."""
@@ -52,12 +53,22 @@ def _generate_qr_base64(data: str) -> str:
         qr = qrcode.QRCode(version=1, box_size=6, border=2)
         qr.add_data(data)
         qr.make(fit=True)
-        img = qr.make_image(fill_color="#1a3c5e", back_color="white")
+        img = qr.make_image(fill_color="#243bb0", back_color="white")
         buf = io.BytesIO()
         img.save(buf, format='PNG')
         return base64.b64encode(buf.getvalue()).decode('utf-8')
     except Exception as e:
         logger.warning(f"[PDF] QR code generation failed: {e}")
+        return ""
+
+
+def _load_logo_base64() -> str:
+    """Load the shared brand logo for inline HTML/PDF rendering."""
+    try:
+        with open(LOGO_PATH, 'rb') as f:
+            return base64.b64encode(f.read()).decode('utf-8')
+    except Exception as e:
+        logger.warning(f"[PDF] Logo load failed: {e}")
         return ""
 
 def generate_billing_pdf(patient: dict, financial: dict) -> tuple[bytes | None, str | None]:
@@ -73,16 +84,18 @@ def generate_billing_pdf(patient: dict, financial: dict) -> tuple[bytes | None, 
 
         # Build QR payload
         qr_data = (
-            f"PRO-BILL|{patient.get('_id', 'N/A')}|"
+            f"SACC-BILL|{patient.get('_id', 'N/A')}|"
             f"{financial.get('month_year', '')}|"
             f"PKR{financial.get('total_charges', 0)}"
         )
         qr_b64 = _generate_qr_base64(qr_data)
+        logo_b64 = _load_logo_base64()
 
         context = {
             "patient": patient,
             "financial": financial,
             "qr_b64": qr_b64,
+            "logo_b64": logo_b64,
             "generated_at": datetime.now().strftime('%d %B %Y, %I:%M %p'),
             "currency": "PKR",
         }
@@ -124,17 +137,17 @@ def generate_daily_report_pdf(patient: dict, reports: list) -> tuple[bytes | Non
 <meta charset="utf-8">
 <style>
   body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; }
-  .header { background: #1a3c5e; color: white; padding: 30px; text-align: center; border-radius: 0 0 20px 20px; }
+  .header { background: linear-gradient(135deg, #3455f3, #243bb0); color: white; padding: 30px; text-align: center; border-radius: 0 0 20px 20px; }
   .container { padding: 20px; }
   table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-  th { background: #f4f4f4; padding: 12px; text-align: left; border-bottom: 2px solid #1a3c5e; }
+  th { background: #eef2ff; padding: 12px; text-align: left; border-bottom: 2px solid #3455f3; }
   td { padding: 12px; border-bottom: 1px solid #eee; }
   .mood-badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8em; }
 </style>
 </head>
 <body>
   <div class="header">
-    <h1>Pakistan Recovery Oasis</h1>
+    <h1>Sabiha Ashraf Care Center</h1>
     <p>Daily Progress Summary: {{ patient.name }}</p>
   </div>
   <div class="container">

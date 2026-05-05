@@ -184,7 +184,7 @@ def send_password_reset_email(to_email, username, token):
     expires_in = app.config.get("PASSWORD_RESET_EXPIRY_MINUTES", 30)
 
     message = EmailMessage()
-    message["Subject"] = "Reset your PRO account password"
+    message["Subject"] = "Reset your Sabiha Ashraf Care Center account password"
     message["From"] = gmail_user
     message["To"] = to_email
     message.set_content(

@@ -202,7 +202,7 @@ def _build_message(message_type: str, payload: dict) -> str:
         amount = payload.get("total_amount", 0)
         pdf_url = payload.get("pdf_url", "")
         msg = (
-            f"🏥 *Pakistan Recovery Oasis*\n\n"
+            f"🏥 *Sabiha Ashraf Care Center*\n\n"
             f"Dear {patient},\n\n"
             f"Your billing statement for *{month}* is ready.\n"
             f"💰 Total Amount Due: *PKR {amount:,}*\n"
@@ -222,7 +222,7 @@ def _build_message(message_type: str, payload: dict) -> str:
         diet = payload.get("diet_status", "N/A")
         notes = payload.get("notes", "")
         msg = (
-            f"🏥 *PRO — Daily Patient Update*\n\n"
+            f"🏥 *Sabiha Ashraf Care Center — Daily Patient Update*\n\n"
             f"👤 Patient: *{patient}*\n"
             f"📅 Date: {datetime.now().strftime('%d %b %Y')}\n\n"
             f"😊 Mood: {mood}\n"
@@ -231,20 +231,20 @@ def _build_message(message_type: str, payload: dict) -> str:
         )
         if notes:
             msg += f"\n📝 Notes: {notes}\n"
-        msg += "\n_Pakistan Recovery Oasis — Automated Daily Report_"
+        msg += "\n_Sabiha Ashraf Care Center — Automated Daily Report_"
         return msg
 
     elif message_type == "alert":
         alert = payload.get("alert", "System alert")
         return (
-            f"🚨 *PRO System Alert*\n\n"
+            f"🚨 *SACC System Alert*\n\n"
             f"{alert}\n\n"
             f"_Time: {datetime.now().strftime('%d %b %Y, %I:%M %p')}_"
         )
 
     elif message_type == "welcome":
         return (
-            f"🏥 *Welcome to Pakistan Recovery Oasis Family Portal*\n\n"
+            f"🏥 *Welcome to Sabiha Ashraf Care Center Family Portal*\n\n"
             f"Dear *{payload.get('family_name', 'Family')}*,\n\n"
             f"Your loved one *{payload.get('patient_name', '')}* has been admitted.\n"
             f"You can track their progress via the Family Dashboard:\n\n"
@@ -252,12 +252,12 @@ def _build_message(message_type: str, payload: dict) -> str:
             f"👤 Username: `{payload.get('username', '')}`\n"
             f"🔑 Password: `{payload.get('temp_password', '')}`\n\n"
             f"_Please change your password after first login._\n"
-            f"_PRO Administration_"
+            f"_Sabiha Ashraf Care Center Administration_"
         )
 
     elif message_type == "otp":
         return (
-            f"🔐 *PRO System — Login Verification*\n\n"
+            f"🔐 *SACC System — Login Verification*\n\n"
             f"Hello *{payload.get('username', '')}*,\n\n"
             f"Your one-time login code is:\n\n"
             f"*{payload.get('otp', '------')}*\n\n"
@@ -265,4 +265,4 @@ def _build_message(message_type: str, payload: dict) -> str:
         )
 
     else:
-        return f"[PRO System] Message type '{message_type}': {json.dumps(payload, default=str)}"
+        return f"[SACC System] Message type '{message_type}': {json.dumps(payload, default=str)}"
