@@ -4,16 +4,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PRO - Pakistan Recovery Oasis HMS</title>
+  <title>Sabiha Ashraf Care Center HMS</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- PWA -->
   <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#1a3c5e" />
+  <meta name="theme-color" content="#3455f3" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="PRO" />
+  <meta name="apple-mobile-web-app-title" content="SACC" />
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -51,22 +51,164 @@
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&family=Manrope:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
 
     :root {
-      --shamrock: #4ade80;
-      --shamrock-strong: #22c55e;
-      --toast-green-bg: #22c55e;
-      --toast-green-border: #16a34a;
-      --toast-green-text: #f0fdf4;
+      --brand-blue: #3455f3;
+      --brand-blue-deep: #243bb0;
+      --brand-blue-soft: #e8edff;
+      --brand-orange: #f47a3c;
+      --brand-orange-deep: #d85f22;
+      --brand-gold: #f5c84b;
+      --brand-ink: #101827;
+      --brand-ink-soft: #334155;
+      --brand-cream: #fff8ef;
+      --shamrock: var(--brand-orange);
+      --shamrock-strong: var(--brand-orange-deep);
+      --toast-green-bg: var(--brand-blue);
+      --toast-green-border: var(--brand-blue-deep);
+      --toast-green-text: #f8faff;
       --toast-red-bg: #991b1b;
       --toast-red-border: #f87171;
-      --forest: #0f3c2d;
-      --amber: #f59e0b;
-      --sky: #1d9bf0;
-      --surface: #f5f7f8;
+      --forest: var(--brand-blue-deep);
+      --amber: var(--brand-gold);
+      --sky: var(--brand-blue);
+      --surface: #f7f8ff;
       --card: #ffffff;
-      --text-main: #122024;
-      --text-muted: #4b5563;
-      --border-soft: #e5e7eb;
+      --text-main: var(--brand-ink);
+      --text-muted: #526072;
+      --border-soft: #dbe2f1;
     }
+
+    .brand-seal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 50% 35%, rgba(245, 200, 75, 0.2), rgba(255, 255, 255, 0.96) 55%, rgba(52, 85, 243, 0.12) 100%);
+      box-shadow: 0 18px 40px rgba(36, 59, 176, 0.16), 0 0 0 6px rgba(244, 122, 60, 0.14);
+      padding: 10px;
+    }
+
+    .brand-seal img {
+      display: block;
+      object-fit: contain;
+    }
+
+    .brand-seal--sm img {
+      width: 46px;
+      height: 46px;
+    }
+
+    .brand-seal--md img {
+      width: 72px;
+      height: 72px;
+    }
+
+    .brand-seal--lg img {
+      width: 84px;
+      height: 84px;
+    }
+
+    .brand-wordmark {
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand-ink);
+      line-height: 1.05;
+    }
+
+    .brand-wordmark-accent {
+      color: var(--brand-blue-deep);
+    }
+
+    .brand-submark {
+      color: var(--brand-orange);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    .brand-tagline {
+      color: #5b6578;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .app-brand-inline {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      min-width: 0;
+    }
+
+    .app-brand-inline__text {
+      min-width: 0;
+      line-height: 1.05;
+    }
+
+    .app-brand-inline__title {
+      font-size: 0.96rem;
+      font-weight: 800;
+      color: var(--brand-ink);
+      letter-spacing: 0.03em;
+    }
+
+    .app-brand-inline__subtitle {
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--brand-orange);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+
+    .print-brand-logo {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .bg-emerald-50 { background-color: #f4f7ff !important; }
+    .bg-emerald-100 { background-color: #e8edff !important; }
+    .bg-emerald-200 { background-color: #d6deff !important; }
+    .bg-emerald-400 { background-color: #6e89ff !important; }
+    .bg-emerald-500 { background-color: var(--brand-orange) !important; }
+    .bg-emerald-600 { background-color: var(--brand-blue) !important; }
+    .bg-emerald-700 { background-color: var(--brand-blue-deep) !important; }
+    .bg-emerald-800 { background-color: #182b89 !important; }
+    .bg-emerald-900 { background-color: #101c56 !important; }
+    .text-emerald-50 { color: #fffdf6 !important; }
+    .text-emerald-100 { color: #fff0c0 !important; }
+    .text-emerald-200 { color: #ffe196 !important; }
+    .text-emerald-300 { color: #ffd56f !important; }
+    .text-emerald-400, .text-emerald-500 { color: var(--brand-orange) !important; }
+    .text-emerald-600 { color: var(--brand-blue) !important; }
+    .text-emerald-700 { color: var(--brand-blue-deep) !important; }
+    .text-emerald-800 { color: #22306f !important; }
+    .text-emerald-900 { color: var(--brand-ink) !important; }
+    .border-emerald-50 { border-color: #f4f7ff !important; }
+    .border-emerald-100 { border-color: #dfe6ff !important; }
+    .border-emerald-200 { border-color: #ccd8ff !important; }
+    .border-emerald-400 { border-color: #8ea2ff !important; }
+    .border-emerald-500 { border-color: var(--brand-orange) !important; }
+    .border-emerald-600 { border-color: var(--brand-blue) !important; }
+    .border-emerald-700 { border-color: var(--brand-blue-deep) !important; }
+    .border-emerald-800 { border-color: #22306f !important; }
+    .border-emerald-900 { border-color: #141f4d !important; }
+    .ring-emerald-100 { --tw-ring-color: #dfe6ff !important; }
+    .ring-emerald-500 { --tw-ring-color: rgba(52, 85, 243, 0.42) !important; }
+    .shadow-emerald-100 { --tw-shadow-color: rgba(223, 230, 255, 0.85) !important; }
+    .shadow-emerald-200 { --tw-shadow-color: rgba(204, 216, 255, 0.95) !important; }
+    .shadow-emerald-500 { --tw-shadow-color: rgba(52, 85, 243, 0.35) !important; }
+    .shadow-emerald-600 { --tw-shadow-color: rgba(36, 59, 176, 0.4) !important; }
+    .from-emerald-50 { --tw-gradient-from: #f4f7ff var(--tw-gradient-from-position) !important; --tw-gradient-to: rgba(244, 247, 255, 0) var(--tw-gradient-to-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+    .from-emerald-100 { --tw-gradient-from: #e8edff var(--tw-gradient-from-position) !important; --tw-gradient-to: rgba(232, 237, 255, 0) var(--tw-gradient-to-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+    .from-emerald-600 { --tw-gradient-from: var(--brand-blue) var(--tw-gradient-from-position) !important; --tw-gradient-to: rgba(52, 85, 243, 0) var(--tw-gradient-to-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+    .from-emerald-700 { --tw-gradient-from: var(--brand-blue-deep) var(--tw-gradient-from-position) !important; --tw-gradient-to: rgba(36, 59, 176, 0) var(--tw-gradient-to-position) !important; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important; }
+    .via-emerald-50 { --tw-gradient-stops: var(--tw-gradient-from), #f4f7ff var(--tw-gradient-via-position), var(--tw-gradient-to) !important; }
+    .via-emerald-700 { --tw-gradient-stops: var(--tw-gradient-from), var(--brand-orange) var(--tw-gradient-via-position), var(--tw-gradient-to) !important; }
+    .to-emerald-50 { --tw-gradient-to: #f4f7ff var(--tw-gradient-to-position) !important; }
+    .to-emerald-100 { --tw-gradient-to: #e8edff var(--tw-gradient-to-position) !important; }
+    .to-emerald-600 { --tw-gradient-to: var(--brand-blue-deep) var(--tw-gradient-to-position) !important; }
+    .to-teal-900 { --tw-gradient-to: #131f58 var(--tw-gradient-to-position) !important; }
 
     .urdu-text {
       font-family: 'Noto Nastaliq Urdu', 'Arial', sans-serif;
@@ -712,14 +854,9 @@
         align-items: center;
         justify-content: center;
         margin-bottom: 20px;
-        border-bottom: 2px solid #166534;
+        border-bottom: 2px solid var(--brand-blue);
         padding-bottom: 10px;
         gap: 20px;
-      }
-
-      .print-logo-icon {
-        font-size: 40pt;
-        color: #166534;
       }
 
       .print-title-block {
@@ -727,19 +864,19 @@
       }
 
       .print-pro {
-        font-size: 36pt;
+        font-size: 24pt;
         font-weight: bold;
-        color: #166534;
+        color: var(--brand-blue-deep);
         line-height: 1;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
       }
 
       .print-sub-pro {
-        font-size: 14pt;
+        font-size: 13pt;
         font-weight: bold;
-        color: #333;
+        color: var(--brand-orange);
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 3px;
       }
 
       .print-tagline {
@@ -1979,7 +2116,7 @@
 
     /* --- NEW LOGIN DESIGN STYLES --- */
     #login-view {
-      background: linear-gradient(135deg, #0a2a4a 0%, #0d3b6e 30%, #1a5276 60%, #0e6655 100%) !important;
+      background: radial-gradient(circle at top, rgba(245, 200, 75, 0.18), transparent 28%), linear-gradient(135deg, #18275e 0%, #2946c8 38%, #3455f3 64%, #f47a3c 100%) !important;
       overflow-y: auto !important;
       font-family: 'Poppins', sans-serif;
     }
@@ -2003,11 +2140,11 @@
     }
 
     .plus-symbol.teal {
-      color: rgba(26, 188, 156, .25)
+      color: rgba(244, 122, 60, .25)
     }
 
     .plus-symbol.green {
-      color: rgba(39, 174, 96, .2)
+      color: rgba(52, 85, 243, .2)
     }
 
     .plus-symbol.white {
@@ -2015,7 +2152,7 @@
     }
 
     .plus-symbol.gold {
-      color: rgba(243, 156, 18, .18)
+      color: rgba(245, 200, 75, .22)
     }
 
     @keyframes floatPlus {
@@ -2100,7 +2237,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 10px 40px rgba(26, 188, 156, .5), 0 0 0 8px rgba(26, 188, 156, .15);
+      box-shadow: 0 14px 42px rgba(36, 59, 176, .28), 0 0 0 8px rgba(244, 122, 60, .14);
       margin-bottom: 18px;
       animation: pulseGlow 3s ease-in-out infinite;
     }
@@ -2115,18 +2252,18 @@
 
       0%,
       100% {
-        box-shadow: 0 10px 40px rgba(26, 188, 156, .5), 0 0 0 8px rgba(26, 188, 156, .15)
+        box-shadow: 0 14px 42px rgba(36, 59, 176, .28), 0 0 0 8px rgba(244, 122, 60, .14)
       }
 
       50% {
-        box-shadow: 0 10px 50px rgba(26, 188, 156, .7), 0 0 0 14px rgba(26, 188, 156, .2)
+        box-shadow: 0 16px 54px rgba(36, 59, 176, .38), 0 0 0 14px rgba(244, 122, 60, .2)
       }
     }
 
     .brand-name-login {
       font-size: clamp(1.25rem, 3.2vw, 2.4rem);
       font-weight: 800;
-      background: linear-gradient(135deg, #fff 0%, #a8ffec 100%);
+      background: linear-gradient(135deg, #fff7d6 0%, #ffffff 42%, #d6deff 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -2174,7 +2311,7 @@
       display: block;
       font-size: .88rem;
       font-weight: 600;
-      color: #1a5276;
+      color: var(--brand-blue-deep);
       margin-bottom: 8px;
       letter-spacing: .5px;
     }
@@ -2194,9 +2331,9 @@
     }
 
     .form-input-new:focus {
-      border-color: #0A870E;
+      border-color: var(--brand-orange);
       background: #fff;
-      box-shadow: 0 0 0 4px rgba(10, 135, 14, .15), inset 0 2px 6px rgba(0, 0, 0, .04);
+      box-shadow: 0 0 0 4px rgba(244, 122, 60, .14), inset 0 2px 6px rgba(0, 0, 0, .04);
     }
 
     .btn-login-new {
@@ -2204,7 +2341,7 @@
       padding: 15px;
       border-radius: 9999px;
       border: none;
-      background: linear-gradient(135deg, #0A870E, #0A870E);
+      background: linear-gradient(135deg, var(--brand-orange), var(--brand-orange-deep));
       color: #fff;
       font-family: 'Poppins', sans-serif;
       font-size: 1.05rem;
@@ -2213,14 +2350,14 @@
       text-transform: uppercase;
       cursor: pointer;
       transition: all .3s ease;
-      box-shadow: 0 8px 25px rgba(10, 135, 14, .4);
+      box-shadow: 0 8px 25px rgba(216, 95, 34, .35);
       position: relative;
       overflow: hidden;
     }
 
     .btn-login-new:hover {
       transform: translateY(-2px);
-      box-shadow: 0 14px 35px rgba(26, 188, 156, .55)
+      box-shadow: 0 14px 35px rgba(36, 59, 176, .35)
     }
 
     .eye-btn-new {
@@ -2237,7 +2374,7 @@
     }
 
     .eye-btn-new:hover {
-      color: #1a7a5e
+      color: var(--brand-blue)
     }
 
     .pagination-shell {
@@ -3206,11 +3343,11 @@
               </style>
             </head>
             <body>
-              <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px; gap: 15px; border-bottom: 2px solid #10b981; padding-bottom: 15px;">
-                <i class="fas fa-clipboard-check" style="font-size: 40px; color: #10b981"></i>
+                  <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px; gap: 15px; border-bottom: 2px solid #3455f3; padding-bottom: 15px;">
+                <img src="/static/icons/icon-512.png" alt="Sabiha Ashraf Care Center logo" style="width: 54px; height: 54px; object-fit: contain;">
                 <div style="text-align: center">
-                  <div style="font-size: 22px; font-weight: bold; color: #10b981">PRO</div>
-                  <div style="font-size: 13px; font-weight: bold; color: #059669">PAKISTAN RECOVERY OASIS</div>
+                  <div style="font-size: 19px; font-weight: 800; color: #243bb0; letter-spacing: 0.04em;">SABIHA ASHRAF</div>
+                  <div style="font-size: 13px; font-weight: 800; color: #f47a3c; letter-spacing: 0.18em;">CARE CENTER</div>
                   <div style="font-size: 12px; color: #666">Call & Meeting Tracker</div>
                 </div>
               </div>
@@ -8425,12 +8562,12 @@
           <html>
             <head>
               <meta charset="UTF-8" />
-              <title>PRO Daily Report</title>
+              <title>Sabiha Ashraf Care Center Daily Report</title>
               ${styles}
             </head>
             <body>
               <header>
-                <h1>Pakistan Recovery Oasis</h1>
+                <h1>Sabiha Ashraf Care Center</h1>
                 <p>Daily Patient Activity Report</p>
                 <p style="margin-top:4px;">&#9742; +966-557385262</p>
               </header>
@@ -9439,12 +9576,12 @@
         <div class="bg-white max-w-2xl mx-auto text-gray-800 font-sans" style="padding: 15px;">
           <!-- Header Layout -->
           <div class="flex items-center justify-between mb-4">
-            <div class="w-16">
-              <i class="fas fa-brain text-[#0b7454]" style="font-size: 40px;"></i>
+            <div class="w-16 flex justify-start">
+              <img src="/static/icons/icon-512.png" alt="Sabiha Ashraf Care Center logo" style="width: 52px; height: 52px; object-fit: contain;">
             </div>
             <div class="text-center flex-1">
-              <h1 class="font-extrabold text-[#0b7454] tracking-wider" style="font-size: 28px; line-height: 1;">PRO</h1>
-              <p class="font-bold text-gray-800 tracking-wide" style="font-size: 11px;">PAKISTAN RECOVERY OASIS</p>
+              <h1 class="font-extrabold tracking-wide" style="font-size: 19px; line-height: 1; color: #243bb0;">SABIHA ASHRAF</h1>
+              <p class="font-bold tracking-[0.3em]" style="font-size: 11px; color: #f47a3c;">CARE CENTER</p>
               <div class="border-t border-gray-400 mt-1 mb-1 w-1/2 mx-auto"></div>
               <p class="text-[8px] text-gray-600 tracking-wide uppercase">Addiction Treatment & Psychological Services</p>
               <p class="text-[9px] mt-1"><i class="fas fa-phone-alt mr-1"></i>+966-557385262</p>
@@ -9550,7 +9687,7 @@
           </table>
           ${row.notes ? `<div class="mt-2 text-[10px] text-gray-600"><span class="font-bold">Notes:</span> ${row.notes}</div>` : ''}
           <div class="mt-3 pt-2 border-t border-gray-200 text-center text-[9px] text-gray-500">
-            Thank you for choosing PRO - Pakistan Recovery Oasis
+            Thank you for choosing Sabiha Ashraf Care Center
           </div>
         </div>
       `;
@@ -9655,13 +9792,13 @@
         <!-- LEFT: Logo -->
         <div class="logo-section-login">
           <div class="logo-icon-login">
-            <img src="https://pakistanrecoveryoasis.com/Images/logo.png" alt="Logo" class="logo-img-login">
+            <img src="/static/icons/icon-512.png" alt="Sabiha Ashraf Care Center logo" class="logo-img-login">
           </div>
           <div>
-            <div class="brand-name-login">PAKISTAN</div>
-            <div class="brand-name-login sub">RECOVERY OASIS</div>
+            <div class="brand-name-login">Sabiha Ashraf</div>
+            <div class="brand-name-login sub">Care Center</div>
             <div
-              style="width:180px;height:2px;background:linear-gradient(90deg,#1abc9c,#27ae60);border-radius:2px;margin:12px auto 0;">
+              style="width:180px;height:2px;background:linear-gradient(90deg,#f5c84b,#f47a3c,#3455f3);border-radius:2px;margin:12px auto 0;">
             </div>
           </div>
         </div>
@@ -9841,8 +9978,16 @@
     </div>
   </div>
 
-  <div class="md:hidden bg-emerald-500 text-white p-4 flex justify-between items-center shadow z-30 flex-none">
-    <h1 class="font-bold text-lg"><i class="fas fa-brain mr-2"></i> PRO System</h1>
+  <div class="md:hidden bg-emerald-500 text-white p-4 flex justify-between items-center shadow z-30 flex-none gap-3">
+    <div class="app-brand-inline">
+      <span class="brand-seal brand-seal--sm" style="background: rgba(255,255,255,0.14); box-shadow: none; padding: 6px;">
+        <img src="/static/icons/icon-512.png" alt="Sabiha Ashraf Care Center logo">
+      </span>
+      <div class="app-brand-inline__text">
+        <div class="text-sm font-extrabold tracking-wide text-white">Sabiha Ashraf</div>
+        <div class="text-[10px] font-bold uppercase tracking-[0.25em] text-white/85">Care Center</div>
+      </div>
+    </div>
     <button onclick="toggleSidebar()" class="focus:outline-none">
       <i class="fas fa-bars text-xl"></i>
     </button>
@@ -9853,9 +9998,15 @@
   <aside id="main-sidebar" style="display: none;"
     class="bg-gradient-to-b from-emerald-100 via-emerald-50 to-emerald-100 text-emerald-900 flex-col no-print shadow-xl border-r border-emerald-100 z-20 absolute md:relative inset-y-0 left-0 w-64 transform -translate-x-full md:translate-x-0 sidebar-transition md:flex h-full">
     <div class="p-6 border-b border-emerald-100 flex items-center justify-between">
-      <h1 class="text-2xl font-bold flex items-center gap-2 text-emerald-900">
-        <i class="fas fa-brain text-emerald-500"></i> PRO System
-      </h1>
+      <div class="app-brand-inline">
+        <span class="brand-seal brand-seal--sm">
+          <img src="/static/icons/icon-512.png" alt="Sabiha Ashraf Care Center logo">
+        </span>
+        <div class="app-brand-inline__text">
+          <div class="app-brand-inline__title">Sabiha Ashraf</div>
+          <div class="app-brand-inline__subtitle">Care Center</div>
+        </div>
+      </div>
       <button onclick="toggleSidebar()" class="text-emerald-500 hover:text-emerald-700 focus:outline-none">
         <i class="fas fa-times text-xl"></i>
       </button>
@@ -9991,7 +10142,7 @@
                 </div>
                 <div>
                   <h2 class="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight">Clinical Portal</h2>
-                  <p class="text-emerald-100/80 text-sm font-medium tracking-wide">Pakistan Recovery Oasis • Staff Dashboard</p>
+                  <p class="text-emerald-100/80 text-sm font-medium tracking-wide">Sabiha Ashraf Care Center • Staff Dashboard</p>
                 </div>
               </div>
               <div class="flex flex-wrap gap-2">
@@ -12094,23 +12245,25 @@
       <tr style="border: none !important">
         <!-- Left: Logo -->
         <td class="text-left align-middle" style="width: 20%; border: none !important; padding: 0 0 8px 0">
-          <i class="fas fa-brain text-5xl text-emerald-700" style="
+          <img src="/static/icons/icon-512.png" alt="Sabiha Ashraf Care Center logo" style="
+                width: 60px;
+                height: 60px;
+                object-fit: contain;
                 background: transparent !important;
                 display: inline-block;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-              "></i>
+              ">
         </td>
 
         <!-- Center: Header Text -->
         <td class="text-center align-middle" style="width: 60%; border: none !important; padding: 0 0 8px 0">
-          <h1 class="text-2xl font-bold text-gray-900 tracking-tight leading-none whitespace-nowrap" style="margin: 0">
-            PRO
+          <h1 class="text-xl font-bold tracking-tight leading-none whitespace-nowrap" style="margin: 0; color: #243bb0;">
+            SABIHA ASHRAF
           </h1>
-          <h2 class="text-xs font-bold text-emerald-700 tracking-wider leading-none mt-1 whitespace-nowrap"
-            style="margin: 4px 0 0 0">
-            PAKISTAN RECOVERY OASIS
-          </h2>
+          <h2 class="text-xs font-bold tracking-[0.3em] leading-none mt-1 whitespace-nowrap"
+            style="margin: 4px 0 0 0; color: #f47a3c;"
+            >CARE CENTER</h2>
           <p class="text-[9px] text-gray-500 mt-1 leading-tight whitespace-nowrap" style="margin: 4px 0 0 0">
             Addiction Treatment & Psychological Services
           </p>
@@ -12202,7 +12355,7 @@
       </tbody>
     </table>
 
-    <h3 class="font-bold text-lg text-gray-800 mb-3 border-l-4 border-blue-500 pl-3">
+    <h3 class="font-bold text-lg text-gray-800 mb-3 border-l-4 border-[#f47a3c] pl-3">
       Payment History (Credits)
     </h3>
     <table class="w-full text-sm border-collapse mb-2">
@@ -12247,10 +12400,10 @@
   <div id="printable-area">
     <div class="print-container">
       <div class="print-header">
-        <i class="fas fa-brain print-logo-icon"></i>
+        <img src="/static/icons/icon-512.png" alt="Sabiha Ashraf Care Center logo" class="print-brand-logo">
         <div class="print-title-block">
-          <div class="print-pro">PRO</div>
-          <div class="print-sub-pro">PAKISTAN RECOVERY OASIS</div>
+          <div class="print-pro">SABIHA ASHRAF</div>
+          <div class="print-sub-pro">CARE CENTER</div>
           <div class="print-tagline">Addiction Treatment & Psychological Services</div>
           <div class="print-tagline"><i class="fas fa-phone mr-1"></i>+966-557385262</div>
         </div>
@@ -12514,11 +12667,11 @@
   <div id="printable-receipt" class="hidden">
     <div class="p-6 border-2 border-gray-800 m-auto"
       style="width: 148mm; height: 180mm; box-sizing: border-box; position: relative;">
-      <div class="flex items-center justify-center gap-4 border-b-2 border-gray-800 pb-6 mb-6">
-        <i class="fas fa-brain text-5xl text-gray-800"></i>
+      <div class="flex items-center justify-center gap-4 border-b-2 border-[#243bb0] pb-6 mb-6">
+        <img src="/static/icons/icon-512.png" alt="Sabiha Ashraf Care Center logo" style="width: 64px; height: 64px; object-fit: contain;">
         <div class="text-center">
-          <h1 class="text-3xl font-bold tracking-wider">PRO</h1>
-          <h2 class="text-xl font-bold">PAKISTAN RECOVERY OASIS</h2>
+          <h1 class="text-2xl font-bold tracking-wide text-[#243bb0]">SABIHA ASHRAF</h1>
+          <h2 class="text-lg font-bold tracking-[0.3em] text-[#f47a3c]">CARE CENTER</h2>
           <p class="text-sm text-gray-600 uppercase tracking-widest mt-1">Payment Receipt</p>
           <p class="text-xs text-gray-500 mt-1"><i class="fas fa-phone mr-1"></i>+966-557385262</p>
         </div>
@@ -12581,7 +12734,7 @@
 
       <div class="text-center mt-8 text-xs text-gray-400">
         <p>Thank you for your payment.</p>
-        <p>Pakistan Recovery Oasis - Addiction Treatment & Psychological Services</p>
+        <p>Sabiha Ashraf Care Center - Addiction Treatment & Psychological Services</p>
       </div>
     </div>
   </div>
@@ -13197,11 +13350,11 @@
       <div>
         <div class="flex items-center justify-between border-b-2 border-emerald-800 pb-4 mb-6">
           <div class="flex items-center gap-4">
-            <i class="fas fa-brain text-5xl text-emerald-800"></i>
+            <img src="/static/icons/icon-512.png" alt="Sabiha Ashraf Care Center logo" style="width: 64px; height: 64px; object-fit: contain;">
             <div>
-              <h1 class="text-3xl font-bold tracking-wider leading-none">PRO</h1>
+              <h1 class="text-2xl font-bold tracking-wide leading-none text-[#243bb0]">SABIHA ASHRAF</h1>
               <h2 class="text-sm font-bold text-emerald-800 tracking-widest uppercase mb-1">
-                Pakistan Recovery Oasis
+                Care Center
               </h2>
               <p class="text-xs text-gray-500">Addiction Treatment & Psychological Services</p>
               <p class="text-xs text-gray-500">Lahore, Pakistan</p>
@@ -13279,7 +13432,7 @@
 
         <div class="mt-4 pt-2">
           <div class="flex justify-between items-end">
-            <div class="text-[10px] text-gray-400">Generated by PRO System</div>
+            <div class="text-[10px] text-gray-400">Generated by Sabiha Ashraf Care Center System</div>
             <div class="text-center w-48">
               <div class="border-b-2 border-gray-800 mb-2"></div>
               <p class="font-bold text-gray-800 text-sm">Doctor's Signature</p>
