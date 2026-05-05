@@ -333,14 +333,14 @@
     }
 
     .calendar-day.today {
-      border: 2px solid #166534;
+      border: 2px solid var(--brand-blue);
     }
 
     .calendar-day.call-day {
-      background-color: #dcfce7;
-      color: #166534;
+      background-color: #eef2ff;
+      color: var(--brand-blue-deep);
       font-weight: bold;
-      border: 1px solid #166534;
+      border: 1px solid var(--brand-blue);
     }
 
     #toast-container {
@@ -1384,12 +1384,12 @@
       justify-content: center;
       color: #0f172a;
       background: rgba(255, 255, 255, 0.85);
-      box-shadow: 0 10px 20px rgba(16, 185, 129, 0.15);
+      box-shadow: 0 10px 20px rgba(52, 85, 243, 0.14);
     }
 
     .kpi-accent-shamrock {
-      background: linear-gradient(135deg, #a4f4c9 0%, #74e6ad 100%);
-      color: #065f46;
+      background: linear-gradient(135deg, #ffe8d8 0%, #ffd2bc 100%);
+      color: var(--brand-orange-deep);
     }
 
     .kpi-accent-sky {
@@ -1403,8 +1403,8 @@
     }
 
     .kpi-accent-forest {
-      background: linear-gradient(135deg, #e6f4ef 0%, #c8efe1 100%);
-      color: #0f3c2d;
+      background: linear-gradient(135deg, #eaf0ff 0%, #d9e2ff 100%);
+      color: var(--brand-blue-deep);
     }
 
     .pill {
@@ -1420,9 +1420,9 @@
     }
 
     .pill.active {
-      border-color: rgba(34, 197, 94, 0.45);
-      background: rgba(74, 222, 128, 0.12);
-      color: #065f46;
+      border-color: rgba(52, 85, 243, 0.35);
+      background: rgba(52, 85, 243, 0.1);
+      color: var(--brand-blue-deep);
     }
 
     .panel-card {
@@ -2396,17 +2396,17 @@
       min-width: 38px;
       padding: 8px 12px;
       border-radius: 10px;
-      border: 1px solid #d1fae5;
+      border: 1px solid #ccd8ff;
       background: #ffffff;
-      color: #065f46;
+      color: var(--brand-blue-deep);
       font-size: 0.85rem;
       font-weight: 700;
       transition: all 0.2s ease;
     }
 
     .pagination-btn:hover:not(:disabled) {
-      background: #ecfdf5;
-      border-color: #6ee7b7;
+      background: #eef2ff;
+      border-color: #9eb0ff;
     }
 
     .pagination-btn:disabled {
@@ -2459,7 +2459,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      color: #0A870E;
+      color: var(--brand-blue-deep);
       font-size: .82rem;
     }
 
@@ -2467,9 +2467,9 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      color: #0A870E;
+      color: var(--brand-orange);
       background: transparent;
-      border: 1px solid #0A870E;
+      border: 1px solid var(--brand-orange);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -4753,7 +4753,7 @@
 
     async function renderFamilyDashboard() {
       const container = document.getElementById('family-patients-container');
-      container.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 0;gap:16px"><div style="width:48px;height:48px;border-radius:50%;border:4px solid #059669;border-top-color:transparent;animation:spin 0.8s linear infinite"></div><p style="color:#065f46;font-weight:600;font-size:14px">Loading your family portal...</p></div>';
+      container.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 0;gap:16px"><div style="width:48px;height:48px;border-radius:50%;border:4px solid #3455f3;border-top-color:transparent;animation:spin 0.8s linear infinite"></div><p style="color:#243bb0;font-weight:600;font-size:14px">Loading your family portal...</p></div>';
 
       try {
         const res = await fetch('/api/family/dashboard');
@@ -4794,7 +4794,7 @@
           }
           hs = Math.min(100, Math.max(15, hs));
 
-          const hColor = hs >= 70 ? '#059669' : hs >= 45 ? '#d97706' : '#dc2626';
+          const hColor = hs >= 70 ? '#3455f3' : hs >= 45 ? '#f47a3c' : '#dc2626';
           const hLabel = hs >= 70 ? 'Stable' : hs >= 45 ? 'Monitoring' : 'Critical';
 
           const admDate = p.admissionDate ? new Date(p.admissionDate) : null;
@@ -4804,14 +4804,14 @@
 
           const balance = fin.balance_due || 0;
           const balLabel = balance > 0 ? 'Due' : balance < 0 ? 'Overpaid' : 'Paid';
-          const balColor = balance > 0 ? '#dc2626' : balance < 0 ? '#059669' : '#6b7280';
+          const balColor = balance > 0 ? '#dc2626' : balance < 0 ? '#3455f3' : '#6b7280';
 
           // Report HTML
           var rHtml = '';
           if (report) {
             var rDate = report.date ? String(report.date).split('T')[0].split(' ')[0] : 'Today';
             rHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">'
-              + '<div style="padding:10px;background:#f0fdf4;border-radius:10px;border:1px solid #d1fae5"><div style="font-size:9px;font-weight:800;color:#059669;text-transform:uppercase;margin-bottom:3px"><i class="fas fa-brain"></i> Mood</div><div style="font-size:13px;font-weight:700;color:#065f46">' + (report.behavior || report.mood || 'N/A') + '</div></div>'
+              + '<div style="padding:10px;background:#eef2ff;border-radius:10px;border:1px solid #cdd8ff"><div style="font-size:9px;font-weight:800;color:#3455f3;text-transform:uppercase;margin-bottom:3px"><i class="fas fa-brain"></i> Mood</div><div style="font-size:13px;font-weight:700;color:#243bb0">' + (report.behavior || report.mood || 'N/A') + '</div></div>'
               + '<div style="padding:10px;background:#fef2f2;border-radius:10px;border:1px solid #fee2e2"><div style="font-size:9px;font-weight:800;color:#dc2626;text-transform:uppercase;margin-bottom:3px"><i class="fas fa-heartbeat"></i> Vitals</div><div style="font-size:13px;font-weight:700;color:#991b1b">' + (report.vitals || 'Normal') + '</div></div>'
               + '<div style="padding:10px;background:#fffbeb;border-radius:10px;border:1px solid #fef3c7"><div style="font-size:9px;font-weight:800;color:#d97706;text-transform:uppercase;margin-bottom:3px"><i class="fas fa-utensils"></i> Diet</div><div style="font-size:13px;font-weight:700;color:#92400e">' + (report.diet_status || 'N/A') + '</div></div>'
               + '<div style="padding:10px;background:#f0f9ff;border-radius:10px;border:1px solid #e0f2fe"><div style="font-size:9px;font-weight:800;color:#0284c7;text-transform:uppercase;margin-bottom:3px"><i class="fas fa-calendar-day"></i> Date</div><div style="font-size:13px;font-weight:700;color:#075985">' + rDate + '</div></div>'
@@ -9833,7 +9833,7 @@
               </div>
             </div>
             <div style="text-align:right;margin-bottom:28px;">
-              <a href="#" class="text-[#1a7a5e] text-[0.82rem] font-medium hover:underline"
+              <a href="#" class="text-[#243bb0] text-[0.82rem] font-medium hover:underline"
                 onclick="event.preventDefault(); window.openForgotPasswordModal()">Forgot Password?</a>
             </div>
             <button class="btn-login-new" type="submit">LOGIN</button>
@@ -9850,7 +9850,7 @@
             <div>
               <div style="font-size:0.7rem;color:rgba(0,0,0,.5);text-transform:uppercase;letter-spacing:1px;">Phone
               </div>
-              <div style="color:#0A870E;font-weight:500;">+966-557385262</div>
+              <div style="color:#243bb0;font-weight:600;">+966-557385262</div>
             </div>
           </div>
           <div class="contact-item-new">
@@ -9858,7 +9858,7 @@
             <div>
               <div style="font-size:0.7rem;color:rgba(0,0,0,.5);text-transform:uppercase;letter-spacing:1px;">E-Mail
               </div>
-              <div style="color:#0A870E;font-weight:500;">hashim@codedclouds.org</div>
+              <div style="color:#243bb0;font-weight:600;">hashim@codedclouds.org</div>
             </div>
           </div>
         </div>
