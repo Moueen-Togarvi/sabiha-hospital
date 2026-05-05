@@ -61,6 +61,12 @@ app.config["GMAIL_USER"] = os.environ.get("GMAIL_USER")
 app.config["GMAIL_APP_PASSWORD"] = os.environ.get("GMAIL_APP_PASSWORD")
 app.config["PASSWORD_RESET_EXPIRY_MINUTES"] = int(os.environ.get("PASSWORD_RESET_EXPIRY_MINUTES", "30"))
 
+DEFAULT_ADMIN_USERNAME = os.environ.get("DEFAULT_ADMIN_USERNAME", "sabihaadmin").strip()
+DEFAULT_ADMIN_PASSWORD = os.environ.get("DEFAULT_ADMIN_PASSWORD", "Sabiha@123").strip()
+DEFAULT_ADMIN_NAME = os.environ.get("DEFAULT_ADMIN_NAME", "Sabiha Admin").strip()
+LEGACY_ADMIN_USERNAME = "ImranSaab"
+PROTECTED_ADMIN_USERNAMES = {DEFAULT_ADMIN_USERNAME, LEGACY_ADMIN_USERNAME}
+
 try:
     mongo = PyMongo(app)
     # Trigger a simple operation to verify connection
@@ -103,20 +109,36 @@ def clean_input_data(data):
     return cleaned
 
 def ensure_initial_admin():
-    """Checks for and creates the default admin user 'ImranSaab' on first run."""
+    """Ensure the primary admin exists and migrate the old legacy admin if needed."""
     if check_db():
+        legacy_admin = mongo.db.users.find_one({'username': LEGACY_ADMIN_USERNAME})
+        target_admin = mongo.db.users.find_one({'username': DEFAULT_ADMIN_USERNAME})
+
+        if legacy_admin and not target_admin:
+            mongo.db.users.update_one(
+                {'_id': legacy_admin['_id']},
+                {'$set': {
+                    'username': DEFAULT_ADMIN_USERNAME,
+                    'password': generate_password_hash(DEFAULT_ADMIN_PASSWORD),
+                    'name': DEFAULT_ADMIN_NAME,
+                    'email': os.environ.get('ADMIN_EMAIL', legacy_admin.get('email', 'admin@example.com')).strip().lower(),
+                    'updated_at': datetime.now()
+                }}
+            )
+            print(f"Legacy admin '{LEGACY_ADMIN_USERNAME}' migrated to '{DEFAULT_ADMIN_USERNAME}'.")
+            return
+
         if mongo.db.users.count_documents({}) == 0:
-            # Create ImranSaab as the Admin
             admin_user = {
-                'username': 'ImranSaab',
-                'password': generate_password_hash('password123'),
+                'username': DEFAULT_ADMIN_USERNAME,
+                'password': generate_password_hash(DEFAULT_ADMIN_PASSWORD),
                 'role': 'Admin',
-                'name': 'Imran Khan (Admin)',
+                'name': DEFAULT_ADMIN_NAME,
                 'email': os.environ.get('ADMIN_EMAIL', 'admin@example.com').strip().lower(),
                 'created_at': datetime.now()
             }
             mongo.db.users.insert_one(admin_user)
-            print("Initial Admin user 'ImranSaab' created.")
+            print(f"Initial admin user '{DEFAULT_ADMIN_USERNAME}' created.")
 
 def create_indices():
     """Ensure essential database indices exist for performance."""
@@ -568,7 +590,7 @@ def delete_user(id):
             return jsonify({"error": "User not found"}), 404
 
         # Prevent deleting the main admin
-        if user.get('username') == 'ImranSaab':
+        if user.get('username') in PROTECTED_ADMIN_USERNAMES:
             return jsonify({"error": "Main admin cannot be deleted"}), 403
             
         mongo.db.users.update_one({'_id': ObjectId(id)}, {'$set': {'deleted_at': datetime.utcnow()}})
@@ -4432,7 +4454,7 @@ def request_meeting():
         result = mongo.db.meetings.insert_one(meeting)
 
         # Alert admin via WhatsApp if configured
-        admin = mongo.db.users.find_one({'username': 'ImranSaab'}, {'phone': 1})
+        admin = mongo.db.users.find_one({'username': {'$in': list(PROTECTED_ADMIN_USERNAMES)}}, {'phone': 1})
         admin_phone = admin.get('phone', '') if admin else ''
         if admin_phone:
             alert_msg = (f"📅 New meeting request from {meeting['family_name']} "

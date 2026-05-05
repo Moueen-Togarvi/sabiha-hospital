@@ -6479,7 +6479,7 @@
       const { items: paginatedUsers } = paginateList(users, 'users');
 
       paginatedUsers.forEach((u) => {
-        const isProtectedAdmin = u.username === 'ImranSaab';
+        const isProtectedAdmin = ['ImranSaab', 'sabihaadmin'].includes(u.username);
         const isCurrentUser = String(u._id) === String(currentUser.user_id || '');
         const delBtn = isProtectedAdmin
           ? `<span class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-gray-500">Protected</span>`

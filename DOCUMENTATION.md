@@ -112,6 +112,7 @@ When a payment is added to a patient's record, the system automatically creates 
    ```env
    MONGO_URI=mongodb://localhost:27017/hospital_management
    SECRET_KEY=your_secret_key
+   ENCRYPTION_KEY=your_fernet_key
    GMAIL_USER=your_email@gmail.com
    GMAIL_APP_PASSWORD=your_app_password
    ```

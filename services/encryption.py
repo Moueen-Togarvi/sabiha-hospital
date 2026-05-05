@@ -8,33 +8,50 @@ load_dotenv()
 
 ENCRYPTION_KEY_B64 = os.getenv('ENCRYPTION_KEY')
 if not ENCRYPTION_KEY_B64:
-    # Fallback or error? Spec says AES-256 is mandatory.
-    raise ValueError("ENCRYPTION_KEY must be set in .env for PRO System v2.0")
+    raise ValueError("ENCRYPTION_KEY must be set in .env for Sabiha Ashraf Care Center")
 
-# Decode the base64 key
-# Fernet keys are 32 random bytes, base64 encoded. 
-# AESGCM with a 256-bit key also requires exactly 32 bytes.
-try:
-    # Fernet.generate_key() produces a 32-byte key base64 encoded.
-    # We decode it to get the raw 32 bytes for AES-256.
-    key_bytes = base64.urlsafe_b64decode(ENCRYPTION_KEY_B64)
-    if len(key_bytes) != 32:
-        # If the key isn't 32 bytes, we might need to pad or hash it, 
-        # but standard PRO keys should be 32 bytes.
+
+def _build_aes_key(key_b64: str) -> bytes:
+    """Derive a stable 32-byte AES key from the configured string."""
+    try:
+        key_bytes = base64.urlsafe_b64decode(key_b64)
+        if len(key_bytes) != 32:
+            import hashlib
+            key_bytes = hashlib.sha256(key_bytes).digest()
+    except Exception:
         import hashlib
-        key_bytes = hashlib.sha256(key_bytes).digest()
-except Exception:
-    # If decoding fails, we use a hash of the string to ensure 32 bytes.
-    import hashlib
-    key_bytes = hashlib.sha256(ENCRYPTION_KEY_B64.encode()).digest()
+        key_bytes = hashlib.sha256(key_b64.encode()).digest()
+    return key_bytes
 
-aesgcm = AESGCM(key_bytes)
-# Keep legacy cipher for decrypting old data
-legacy_cipher = Fernet(ENCRYPTION_KEY_B64.encode())
+
+def _iter_legacy_key_strings() -> list[str]:
+    """Return current + legacy Fernet keys for backward-compatible decryption."""
+    seen = set()
+    keys = []
+    for key in [ENCRYPTION_KEY_B64, *os.getenv('LEGACY_ENCRYPTION_KEYS', '').split(',')]:
+        key = (key or '').strip()
+        if key and key not in seen:
+            seen.add(key)
+            keys.append(key)
+    return keys
+
+
+aesgcm = AESGCM(_build_aes_key(ENCRYPTION_KEY_B64))
+legacy_ciphers = []
+legacy_aesgcm = []
+for key_b64 in _iter_legacy_key_strings():
+    try:
+        legacy_ciphers.append(Fernet(key_b64.encode()))
+    except Exception:
+        continue
+    try:
+        legacy_aesgcm.append(AESGCM(_build_aes_key(key_b64)))
+    except Exception:
+        continue
 
 def encrypt_data(data: str) -> str:
     """
-    Encrypts a string using AES-256-GCM (Mandatory for PRO v2.0).
+    Encrypt a string using the primary AES-256-GCM key.
     Returns a base64 encoded string with a 'v2:' prefix for identification.
     """
     if not data:
@@ -50,7 +67,8 @@ def encrypt_data(data: str) -> str:
 def decrypt_data(encrypted_data: str) -> str:
     """
     Decrypts a base64 encoded string.
-    Supports both 'v2:' (AES-256-GCM) and legacy (Fernet/AES-128) formats.
+    Supports both 'v2:' (AES-256-GCM) and legacy Fernet formats.
+    Also tries any keys listed in LEGACY_ENCRYPTION_KEYS.
     """
     if not encrypted_data:
         return ""
@@ -61,16 +79,22 @@ def decrypt_data(encrypted_data: str) -> str:
             raw_data = base64.b64decode(encrypted_data[3:])
             nonce = raw_data[:12]
             ciphertext = raw_data[12:]
-            decrypted = aesgcm.decrypt(nonce, ciphertext, None).decode()
-            return decrypted
+            for cipher in legacy_aesgcm:
+                try:
+                    return cipher.decrypt(nonce, ciphertext, None).decode()
+                except Exception:
+                    continue
         except Exception as e:
-            print(f"[Encryption] AES-256-GCM decryption failed: {e}")
-            return encrypted_data # Fallback to raw if decryption fails
-
-    # Try legacy Fernet decryption
-    try:
-        return legacy_cipher.decrypt(encrypted_data.encode() if isinstance(encrypted_data, str) else encrypted_data).decode()
-    except Exception:
-        # If decryption fails (e.g., data wasn't encrypted), return as is for backward compatibility
-        # print(f"[Encryption] Legacy decryption failed for {str(encrypted_data)[:10]}...")
+            print(f"[Encryption] AES-256-GCM decode failed: {e}")
         return encrypted_data
+
+    # Try legacy Fernet decryption across current + configured legacy keys.
+    raw_value = encrypted_data.encode() if isinstance(encrypted_data, str) else encrypted_data
+    for cipher in legacy_ciphers:
+        try:
+            return cipher.decrypt(raw_value).decode()
+        except Exception:
+            continue
+
+    # If decryption fails (e.g., data wasn't encrypted), return as-is.
+    return encrypted_data

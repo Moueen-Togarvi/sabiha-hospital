@@ -8,6 +8,9 @@ import random
 load_dotenv()
 
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/hospital_management")
+DEFAULT_ADMIN_USERNAME = os.environ.get("DEFAULT_ADMIN_USERNAME", "sabihaadmin")
+DEFAULT_ADMIN_PASSWORD = os.environ.get("DEFAULT_ADMIN_PASSWORD", "Sabiha@123")
+DEFAULT_ADMIN_NAME = os.environ.get("DEFAULT_ADMIN_NAME", "Sabiha Admin")
 
 def seed():
     client = MongoClient(MONGO_URI)
@@ -26,9 +29,9 @@ def seed():
         db[coll].delete_many({})
 
     # 2. Seed Users
-    admin_password = generate_password_hash("password123")
+    admin_password = generate_password_hash(DEFAULT_ADMIN_PASSWORD)
     users = [
-        {"username": "ImranSaab", "password": admin_password, "role": "Admin", "name": "Imran Khan (Admin)", "email": "admin@example.com", "created_at": datetime.now()},
+        {"username": DEFAULT_ADMIN_USERNAME, "password": admin_password, "role": "Admin", "name": DEFAULT_ADMIN_NAME, "email": "admin@example.com", "created_at": datetime.now()},
         {"username": "doctor1", "password": generate_password_hash("doctor123"), "role": "Doctor", "name": "Dr. Smith", "email": "doctor@example.com", "created_at": datetime.now()},
         {"username": "psych1", "password": generate_password_hash("psych123"), "role": "Psychologist", "name": "Dr. Jane Doe", "email": "psych@example.com", "created_at": datetime.now()},
         {"username": "staff1", "password": generate_password_hash("staff123"), "role": "Staff", "name": "Staff Member", "email": "staff@example.com", "created_at": datetime.now()}
@@ -101,19 +104,19 @@ def seed():
 
     # 7. Seed Expenses
     expenses_data = [
-        {"type": "outgoing", "amount": 5000, "category": "Kitchen", "note": "Weekly Grocery", "date": datetime.now() - timedelta(days=3), "recorded_by": "ImranSaab"},
-        {"type": "outgoing", "amount": 2000, "category": "Electricity", "note": "Bill payment", "date": datetime.now() - timedelta(days=10), "recorded_by": "ImranSaab"},
-        {"type": "incoming", "amount": 10000, "category": "Donation", "note": "Anonymous donor", "date": datetime.now() - timedelta(days=15), "recorded_by": "ImranSaab"},
-        {"type": "incoming", "amount": 25000, "category": "Patient Fee", "note": "Fee for Ali Ahmed", "patient_id": str(patient_ids[0]), "date": datetime.now() - timedelta(days=5), "recorded_by": "ImranSaab"}
+        {"type": "outgoing", "amount": 5000, "category": "Kitchen", "note": "Weekly Grocery", "date": datetime.now() - timedelta(days=3), "recorded_by": DEFAULT_ADMIN_USERNAME},
+        {"type": "outgoing", "amount": 2000, "category": "Electricity", "note": "Bill payment", "date": datetime.now() - timedelta(days=10), "recorded_by": DEFAULT_ADMIN_USERNAME},
+        {"type": "incoming", "amount": 10000, "category": "Donation", "note": "Anonymous donor", "date": datetime.now() - timedelta(days=15), "recorded_by": DEFAULT_ADMIN_USERNAME},
+        {"type": "incoming", "amount": 25000, "category": "Patient Fee", "note": "Fee for Ali Ahmed", "patient_id": str(patient_ids[0]), "date": datetime.now() - timedelta(days=5), "recorded_by": DEFAULT_ADMIN_USERNAME}
     ]
     db.expenses.insert_many(expenses_data)
     print("Expenses seeded.")
 
     # 8. Seed Canteen Sales
     canteen_sales = [
-        {"patient_id": str(patient_ids[0]), "amount": 150, "item": "Tea", "date": datetime.now() - timedelta(days=1), "recorded_by": "ImranSaab"},
-        {"patient_id": str(patient_ids[0]), "amount": 500, "item": "Lunch", "date": datetime.now() - timedelta(days=2), "recorded_by": "ImranSaab"},
-        {"patient_id": str(patient_ids[1]), "amount": 200, "item": "Cigarettes", "date": datetime.now() - timedelta(days=1), "recorded_by": "ImranSaab"}
+        {"patient_id": str(patient_ids[0]), "amount": 150, "item": "Tea", "date": datetime.now() - timedelta(days=1), "recorded_by": DEFAULT_ADMIN_USERNAME},
+        {"patient_id": str(patient_ids[0]), "amount": 500, "item": "Lunch", "date": datetime.now() - timedelta(days=2), "recorded_by": DEFAULT_ADMIN_USERNAME},
+        {"patient_id": str(patient_ids[1]), "amount": 200, "item": "Cigarettes", "date": datetime.now() - timedelta(days=1), "recorded_by": DEFAULT_ADMIN_USERNAME}
     ]
     db.canteen_sales.insert_many(canteen_sales)
     print("Canteen sales seeded.")

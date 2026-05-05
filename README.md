@@ -16,7 +16,7 @@ For full technical details, feature guides, and setup instructions, please refer
    ```bash
    pip install -r requirements.txt
    ```
-2. **Setup Environment**: Create a `.env` file with your `MONGO_URI` and `SECRET_KEY`.
+2. **Setup Environment**: Create a `.env` file with your `MONGO_URI`, `SECRET_KEY`, and `ENCRYPTION_KEY`.
 3. **Run the app**:
    ```bash
    python app.py
@@ -25,4 +25,3 @@ For full technical details, feature guides, and setup instructions, please refer
 
 ## 🛡️ License
 Proprietary - Developed for Pakistan Recovery Oasis.
-
